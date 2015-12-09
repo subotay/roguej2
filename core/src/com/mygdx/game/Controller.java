@@ -17,8 +17,6 @@ import com.mygdx.game.utils.Constants;
 import com.mygdx.game.utils.MapUtils;
 import com.mygdx.game.utils.extdata.GameData;
 
-import java.util.HashMap;
-
 import static com.mygdx.game.content.Level.CellFlag.LOOT;
 import static com.mygdx.game.content.Level.CellFlag.TRIGGER;
 
