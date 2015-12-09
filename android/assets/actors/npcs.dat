@@ -1,0 +1,110 @@
+{
+"n_melee1": {
+"STR": 14,
+"AGI": 5,
+"VIT": 10,
+"END": 5,
+"SPI": 5,
+"stts": {
+    "CRIT": { "class": "java.lang.Integer", "value": 3 },
+	"ARMOR": { "class": "java.lang.Integer","value": 2},
+	"SPEEDMULT": {"class": "java.lang.Integer","value": 1},
+	"HPREG": {"class": "java.lang.Integer","value": 1},
+	"EVA": {"class": "java.lang.Integer","value": 0},
+	"HIT": {"class": "java.lang.Integer","value": 2},
+	"FATK": {"class": "java.lang.Integer","value": 2},
+	"EATK": {"class": "java.lang.Integer","value": 0},
+	"MHP": {"class": "java.lang.Integer","value": 10},
+	"STAREG": {"class": "java.lang.Integer","value": 0},
+	"FRES": {"class": "java.lang.Integer","value": 0},
+	"ERES": {"class": "java.lang.Integer","value": 0},
+	"MSTAM": {"class": "java.lang.Integer","value": 10}
+},
+"dumb": false,
+"ranged": false,
+"energ": 100,
+"sprite":"tiles/dc-mon/angel.png"
+},
+
+"n_melee2":{
+"STR": 12,
+"AGI": 7,
+"VIT": 10,
+"END": 5,
+"SPI": 5,
+"stts": {
+    "CRIT": { "class": "java.lang.Integer", "value": 3 },
+	"ARMOR": { "class": "java.lang.Integer","value": 2},
+	"SPEEDMULT": {"class": "java.lang.Integer","value": 1},
+	"HPREG": {"class": "java.lang.Integer","value": 1},
+	"EVA": {"class": "java.lang.Integer","value": 0},
+	"HIT": {"class": "java.lang.Integer","value": 2},
+	"FATK": {"class": "java.lang.Integer","value": 2},
+	"EATK": {"class": "java.lang.Integer","value": 0},
+	"MHP": {"class": "java.lang.Integer","value": 10},
+	"STAREG": {"class": "java.lang.Integer","value": 0},
+	"FRES": {"class": "java.lang.Integer","value": 0},
+	"ERES": {"class": "java.lang.Integer","value": 0},
+	"MSTAM": {"class": "java.lang.Integer","value": 10}
+},
+"dumb": true,
+"ranged": false,
+"energ": 100,
+"sprite":"tiles/dc-mon/angel.png"
+},
+
+"n_ranged1":{
+"STR": 6,
+"AGI": 14,
+"VIT": 8,
+"END": 5,
+"SPI": 5,
+"stts": {
+    "CRIT": { "class": "java.lang.Integer", "value": 3 },
+	"ARMOR": { "class": "java.lang.Integer","value": 2},
+	"SPEEDMULT": {"class": "java.lang.Integer","value": 1},
+	"HPREG": {"class": "java.lang.Integer","value": 1},
+	"EVA": {"class": "java.lang.Integer","value": 0},
+	"HIT": {"class": "java.lang.Integer","value": 2},
+	"FATK": {"class": "java.lang.Integer","value": 2},
+	"EATK": {"class": "java.lang.Integer","value": 0},
+	"MHP": {"class": "java.lang.Integer","value": 10},
+	"STAREG": {"class": "java.lang.Integer","value": 0},
+	"FRES": {"class": "java.lang.Integer","value": 0},
+	"ERES": {"class": "java.lang.Integer","value": 0},
+	"MSTAM": {"class": "java.lang.Integer","value": 10}
+},
+"dumb": false,
+"ranged": true,
+"energ": 100,
+"sprite":"tiles/dc-mon/angel.png"
+},
+
+"n_ranged2":{
+"STR": 9,
+"AGI": 14,
+"VIT": 8,
+"END": 5,
+"SPI": 5,
+"stts": {
+    "CRIT": { "class": "java.lang.Integer", "value": 3 },
+	"ARMOR": { "class": "java.lang.Integer","value": 2},
+	"SPEEDMULT": {"class": "java.lang.Integer","value": 1},
+	"HPREG": {"class": "java.lang.Integer","value": 1},
+	"EVA": {"class": "java.lang.Integer","value": 0},
+	"HIT": {"class": "java.lang.Integer","value": 2},
+	"FATK": {"class": "java.lang.Integer","value": 2},
+	"EATK": {"class": "java.lang.Integer","value": 0},
+	"MHP": {"class": "java.lang.Integer","value": 10},
+	"STAREG": {"class": "java.lang.Integer","value": 0},
+	"FRES": {"class": "java.lang.Integer","value": 0},
+	"ERES": {"class": "java.lang.Integer","value": 0},
+	"MSTAM": {"class": "java.lang.Integer","value": 10}
+},
+"dumb": true,
+"ranged": true,
+"energ": 100,
+"sprite":"tiles/dc-mon/angel.png"
+}
+}
+

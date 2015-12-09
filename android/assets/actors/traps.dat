@@ -1,0 +1,14 @@
+{
+
+"trp1": { 
+	"dmg":5,
+	"sprite": "tiles/dc-misc/blood_red.png" 
+},
+"trp2": { 
+	"dmg":10,
+	"sprite": "tiles/dc-misc/blood_red.png" 
+}
+
+}
+
+

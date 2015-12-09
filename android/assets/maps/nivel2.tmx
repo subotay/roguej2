@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="32" tileheight="32" nextobjectid="16">
+ <tileset firstgid="1" name="dctileset" tilewidth="32" tileheight="32" tilecount="3072">
+  <image source="dctileset.png" width="2048" height="1536"/>
+ </tileset>
+ <layer name="back1" width="20" height="20">
+  <data encoding="base64" compression="zlib">
+   eJw7wczAcGIUDxrMyoIbU9uekWTeYMej4Tcw/iUnv61kwY0HOhzojQESkS1G
+  </data>
+ </layer>
+ <layer name="back2" width="20" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFwxl8YsKORxqgh597WYhXu4cEtYPBPH0s5k+hIEyxmTccAK78Nhzz3CtmBgYAJ0wSEw==
+  </data>
+ </layer>
+ <objectgroup name="objects">
+  <object id="2" name="enter" type="obiect" x="608" y="608" width="32" height="32">
+   <properties>
+    <property name="nivel" value="nivel1"/>
+    <property name="px" value="1"/>
+    <property name="py" value="8"/>
+    <property name="tip" value="trigger"/>
+    <property name="triggers" value="tranzit"/>
+   </properties>
+  </object>
+  <object id="3" type="wall" x="416" y="512" width="224" height="32"/>
+  <object id="5" name="monstru" type="creatura" x="512" y="416" width="32" height="32">
+   <properties>
+    <property name="dumb" value="false"/>
+    <property name="tip" value="monstru"/>
+   </properties>
+  </object>
+  <object id="6" type="wall" x="0" y="160" width="224" height="32"/>
+  <object id="7" type="wall" x="192" y="192" width="32" height="96"/>
+  <object id="8" type="wall" x="192" y="352" width="32" height="64"/>
+  <object id="9" type="wall" x="192" y="480" width="32" height="64"/>
+  <object id="10" type="wall" x="0" y="512" width="192" height="32"/>
+  <object id="11" type="decor" x="192" y="416" width="32" height="64"/>
+  <object id="12" type="decor" x="64" y="352" width="32" height="96"/>
+  <object id="13" type="decor" x="352" y="320" width="32" height="32"/>
+  <object id="14" type="decor" x="352" y="416" width="32" height="32"/>
+ </objectgroup>
+ <layer name="fore" width="20" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUjARwi3GgXTAw4AgLbjwKKAMAMgYGVA==
+  </data>
+ </layer>
+</map>

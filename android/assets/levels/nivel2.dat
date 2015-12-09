@@ -1,0 +1,12 @@
+{
+"creaturi": {
+	"m_melee1": [
+		{
+			"class": "com.badlogic.gdx.math.Vector2",
+			"x": 12,
+			"y": 8
+		}
+	]
+},
+"containers": {}
+}

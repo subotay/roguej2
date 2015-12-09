@@ -1,0 +1,33 @@
+{
+"creaturi": {
+	"n_melee1": [
+		{
+			"class": "com.badlogic.gdx.math.Vector2",
+			"x": 12,
+			"y": 9
+		}
+	],
+	"m_melee1": [
+		{
+			"class": "com.badlogic.gdx.math.Vector2",
+			"x": 21,
+			"y": 13
+		},
+		{
+			"class": "com.badlogic.gdx.math.Vector2",
+			"x": 24,
+			"y": 34
+		}
+	],
+	"m_ranged1": [
+		{
+			"class": "com.badlogic.gdx.math.Vector2",
+			"x": 9,
+			"y": 9
+		}
+	]
+},
+"containers": {
+	"15.0 6.0": []
+}
+}
