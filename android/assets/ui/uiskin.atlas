@@ -1,199 +1,243 @@
+
 uiskin.png
-size: 256,128
+size: 1086,254
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest,Nearest
 repeat: none
-check-off
+borderbar
   rotate: false
-  xy: 11, 5
-  size: 14, 14
-  orig: 14, 14
-  offset: 0, 0
-  index: -1
-textfield
-  rotate: false
-  xy: 11, 5
-  size: 14, 14
+  xy: 31, 13
+  size: 16, 16
   split: 3, 3, 3, 3
-  orig: 14, 14
-  offset: 0, 0
-  index: -1
-check-on
-  rotate: false
-  xy: 125, 35
-  size: 14, 14
-  orig: 14, 14
+  orig: 16, 16
   offset: 0, 0
   index: -1
 cursor
   rotate: false
-  xy: 23, 1
+  xy: 579, 146
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
   offset: 0, 0
   index: -1
-default
+font_g_othic_14pt
   rotate: false
-  xy: 1, 50
-  size: 254, 77
-  orig: 254, 77
+  xy: 514, 190
+  size: 512, 64
+  orig: 512, 64
   offset: 0, 0
   index: -1
-default-pane
+font_g_othic_16pt
   rotate: false
-  xy: 11, 1
-  size: 5, 3
+  xy: 1, 30
+  size: 512, 72
+  orig: 512, 72
+  offset: 0, 0
+  index: -1
+font_g_othic_26pt
+  rotate: false
+  xy: 1, 103
+  size: 512, 151
+  orig: 512, 151
+  offset: 0, 0
+  index: -1
+greenbar
+  rotate: false
+  xy: 514, 85
+  size: 16, 16
   split: 1, 1, 1, 1
-  orig: 5, 3
+  orig: 16, 16
   offset: 0, 0
   index: -1
-default-rect-pad
+mycheck-off
   rotate: false
-  xy: 11, 1
-  size: 5, 3
-  split: 1, 1, 1, 1
-  orig: 5, 3
+  xy: 602, 175
+  size: 14, 14
+  orig: 14, 14
   offset: 0, 0
   index: -1
-default-pane-noborder
+mycheck-on
   rotate: false
-  xy: 170, 44
-  size: 1, 1
-  split: 0, 0, 0, 0
-  orig: 1, 1
+  xy: 1042, 208
+  size: 14, 14
+  orig: 14, 14
   offset: 0, 0
   index: -1
-default-rect
-  rotate: false
-  xy: 38, 25
-  size: 3, 3
-  split: 1, 1, 1, 1
-  orig: 3, 3
-  offset: 0, 0
-  index: -1
-default-rect-down
-  rotate: false
-  xy: 170, 46
-  size: 3, 3
-  split: 1, 1, 1, 1
-  orig: 3, 3
-  offset: 0, 0
-  index: -1
-default-round
-  rotate: false
-  xy: 112, 29
-  size: 12, 20
-  split: 5, 5, 5, 4
-  pad: 4, 4, 1, 1
-  orig: 12, 20
-  offset: 0, 0
-  index: -1
-default-round-down
-  rotate: false
-  xy: 99, 29
-  size: 12, 20
-  split: 5, 5, 5, 4
-  pad: 4, 4, 1, 1
-  orig: 12, 20
-  offset: 0, 0
-  index: -1
-default-round-large
-  rotate: false
-  xy: 57, 29
-  size: 20, 20
-  split: 5, 5, 5, 4
-  orig: 20, 20
-  offset: 0, 0
-  index: -1
-default-scroll
-  rotate: false
-  xy: 78, 29
-  size: 20, 20
-  split: 2, 2, 2, 2
-  orig: 20, 20
-  offset: 0, 0
-  index: -1
-default-select
-  rotate: false
-  xy: 29, 29
-  size: 27, 20
-  split: 4, 14, 4, 4
-  orig: 27, 20
-  offset: 0, 0
-  index: -1
-default-select-selection
-  rotate: false
-  xy: 26, 16
-  size: 3, 3
-  split: 1, 1, 1, 1
-  orig: 3, 3
-  offset: 0, 0
-  index: -1
-default-slider
-  rotate: false
-  xy: 29, 20
-  size: 8, 8
-  split: 2, 2, 2, 2
-  orig: 8, 8
-  offset: 0, 0
-  index: -1
-default-slider-knob
+mydef-pane
   rotate: false
   xy: 1, 1
+  size: 7, 5
+  split: 2, 2, 2, 2
+  orig: 7, 5
+  offset: 0, 0
+  index: -1
+mydef-rect-pad
+  rotate: false
+  xy: 1, 1
+  size: 7, 5
+  split: 2, 2, 2, 2
+  orig: 7, 5
+  offset: 0, 0
+  index: -1
+mydef-pane-noborder
+  rotate: false
+  xy: 596, 163
+  size: 3, 3
+  split: 1, 1, 1, 1
+  orig: 3, 3
+  offset: 0, 0
+  index: -1
+mydef-rect
+  rotate: false
+  xy: 537, 102
+  size: 5, 5
+  split: 2, 2, 2, 2
+  orig: 5, 5
+  offset: 0, 0
+  index: -1
+mydef-rect-down
+  rotate: false
+  xy: 531, 96
+  size: 5, 5
+  split: 2, 2, 2, 2
+  orig: 5, 5
+  offset: 0, 0
+  index: -1
+mydef-round
+  rotate: false
+  xy: 1057, 232
+  size: 14, 22
+  split: 6, 6, 6, 6
+  orig: 14, 22
+  offset: 0, 0
+  index: -1
+mydef-round-down
+  rotate: false
+  xy: 1027, 200
+  size: 14, 22
+  split: 6, 6, 6, 6
+  orig: 14, 22
+  offset: 0, 0
+  index: -1
+mydef-round-large
+  rotate: false
+  xy: 514, 102
+  size: 22, 22
+  split: 6, 6, 7, 5
+  orig: 22, 22
+  offset: 0, 0
+  index: -1
+mydef-scroll
+  rotate: false
+  xy: 579, 167
+  size: 22, 22
+  split: 3, 3, 3, 3
+  orig: 22, 22
+  offset: 0, 0
+  index: -1
+mydef-select
+  rotate: false
+  xy: 1, 7
+  size: 29, 22
+  split: 5, 15, 5, 5
+  orig: 29, 22
+  offset: 0, 0
+  index: -1
+mydef-select-selection
+  rotate: false
+  xy: 554, 119
+  size: 5, 5
+  split: 2, 2, 2, 2
+  orig: 5, 5
+  offset: 0, 0
+  index: -1
+mydef-slider
+  rotate: false
+  xy: 48, 19
+  size: 10, 10
+  split: 3, 3, 3, 3
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+mydef-slider-knob
+  rotate: false
+  xy: 514, 66
   size: 9, 18
   orig: 9, 18
   offset: 0, 0
   index: -1
-default-splitpane
+mydef-splitpane
   rotate: false
-  xy: 17, 1
-  size: 5, 3
-  split: 0, 5, 0, 0
-  orig: 5, 3
+  xy: 31, 7
+  size: 7, 5
+  split: 0, 7, 1, 1
+  orig: 7, 5
   offset: 0, 0
   index: -1
-default-splitpane-vertical
+mydef-splitpane-vertical
   rotate: false
-  xy: 125, 29
-  size: 3, 5
-  split: 0, 0, 0, 5
-  orig: 3, 5
+  xy: 1027, 192
+  size: 5, 7
+  split: 1, 1, 0, 7
+  orig: 5, 7
   offset: 0, 0
   index: -1
-default-window
+mydef-window
   rotate: false
-  xy: 1, 20
-  size: 27, 29
-  split: 4, 3, 20, 3
-  orig: 27, 29
+  xy: 1027, 223
+  size: 29, 31
+  split: 3, 3, 21, 2
+  orig: 29, 31
   offset: 0, 0
   index: -1
-selection
+myselection
   rotate: false
-  xy: 174, 48
+  xy: 602, 173
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
-tree-minus
+mytextfield
   rotate: false
-  xy: 140, 35
+  xy: 537, 108
+  size: 16, 16
+  split: 4, 4, 4, 4
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+mytreeminus
+  rotate: false
+  xy: 1057, 217
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
-tree-plus
+mytreeplus
   rotate: false
-  xy: 155, 35
+  xy: 1072, 240
   size: 14, 14
   orig: 14, 14
+  offset: 0, 0
+  index: -1
+paint_brush
+  rotate: false
+  xy: 514, 125
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+redbar
+  rotate: false
+  xy: 579, 150
+  size: 16, 16
+  split: 1, 1, 1, 1
+  orig: 16, 16
   offset: 0, 0
   index: -1
 white
   rotate: false
-  xy: 129, 31
-  size: 3, 3
-  orig: 3, 3
+  xy: 617, 188
+  size: 1, 1
+  orig: 1, 1
   offset: 0, 0
   index: -1
