@@ -6,19 +6,18 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Joc;
 import com.mygdx.game.utils.Assets;
 
 public class MainMenuScreen implements Screen {
     private final Joc joc;
     private Stage stage;
-    private Skin skin;
+    private float screenw, screenh;
+    private Cell topcell;
 
     public MainMenuScreen(Joc joc) {this.joc = joc;}
 
@@ -28,32 +27,29 @@ public class MainMenuScreen implements Screen {
     }
 
     private void initStage() {
-        stage=new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        screenw= Gdx.graphics.getWidth();
+        screenh= Gdx.graphics.getHeight();
+
+        stage=new Stage(new ScreenViewport());
+//        stage.setDebugAll(true);        //debug
         Gdx.input.setInputProcessor(stage);
 
-        skin=new Skin(Gdx.files.internal("ui/uiskin.json"),
-                Assets.INST.man.get("ui/uiskin.atlas", TextureAtlas.class));
         stage.clear();
-
-        Table table=new Table(skin);
+        Table table=new Table(Assets.skin);
         stage.addActor(table);
         table.setFillParent(true);
 
-        final TextButton play=new TextButton("PLAY",skin),
-//                load=new TextButton("LOAD",skin),
-                opt=new TextButton("OPTIONS", skin),
-            exit=new TextButton("EXIT",skin);
-        float w=Gdx.graphics.getWidth()/4,
-            h= Gdx.graphics.getHeight()/8;
-        table.top().center();
+        final TextButton play=new TextButton("PLAY",Assets.skin),
+                        opt=new TextButton("OPTIONS", Assets.skin),
+                        exit=new TextButton("EXIT",Assets.skin);
+
+//        opt.setStyle(skin.get("toggle",TextButton.TextButtonStyle.class));
+        table.top().right();
+        topcell= table.add(play).width(160).height(50).padBottom(20).padTop(screenh*.25f);
         table.row();
-        table.add(play).width(w).height(h).center().padBottom(20);
-//        table.row();
-//        table.add(load).width(w).height(h).center().padBottom(20);
+        table.add(opt).width(160).height(50).padBottom(20);
         table.row();
-        table.add(opt).width(w).height(h).center().padBottom(20);
-        table.row();
-        table.add(exit).width(w).height(h).center().padBottom(20);
+        table.add(exit).width(160).height(50).padBottom(20);
 
         play.addListener(new ChangeListener() {
             @Override
@@ -84,7 +80,10 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height);
+        screenw= width;
+        screenh= height;
+        stage.getViewport().update(width, height,true);
+        topcell.padTop(screenh * .25f);
     }
 
     @Override
@@ -105,6 +104,5 @@ public class MainMenuScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        skin.dispose();
     }
 }

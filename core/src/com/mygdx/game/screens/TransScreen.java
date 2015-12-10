@@ -43,7 +43,7 @@ public class TransScreen implements Screen {
     }
 
     private void updateAssets(float delta) {
-        if (Assets.INST.man.update()){
+        if (Assets.man.update()){
             if (!joc.play.loaded){
                 joc.play.load();
             }

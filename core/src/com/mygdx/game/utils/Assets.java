@@ -1,14 +1,18 @@
 package com.mygdx.game.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Disposable;
+import com.mygdx.game.ui.UI;
 
-public class Assets implements Disposable {
-    public static final Assets INST =new Assets();
-    public final AssetManager man;
+public class Assets  {
+//    public static final Assets INST =new Assets();
+
+    public static AssetManager man= new AssetManager();
         //sprites
     public static final String NEUTRU1= "tiles/dc-mon/angel.png";
     public static final String MONST1= "tiles/dc-mon/big_kobold.png";
@@ -24,21 +28,23 @@ public class Assets implements Disposable {
     public static  final String S_RHIT = "sounds/range_atk.wav";
     public static  final String S_MHIT = "sounds/melee_atk.wav";
     public static  final String S_LOOT = "sounds/pickup.wav";
+        //skin
+    public static Skin skin;
 
 
-    private Assets(){
-        man=new AssetManager();
-    }
+//    private Assets(){man=new AssetManager();}
 
-    public void initAssets() {
+    public static void initAssets() {
         man.load("ui/uiskin.atlas", TextureAtlas.class);
+        man.finishLoading();
+        skin=new Skin(Gdx.files.internal("ui/uiskin.json"), man.get("ui/uiskin.atlas", TextureAtlas.class));
     }
 
-    public void loadSprite(String name){
+    public static void loadSprite(String name){
         man.load(name, Texture.class);
     }
 
-    public Sprite getSprite(String name){
+    public static Sprite getSprite(String name){
         man.finishLoadingAsset(name);
         Texture txt= man.get(name, Texture.class);
         Sprite sprite= new Sprite(txt);
@@ -46,8 +52,4 @@ public class Assets implements Disposable {
         return sprite;
     }
 
-    @Override
-    public void dispose() {
-        man.dispose();
-    }
 }

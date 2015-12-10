@@ -5,6 +5,7 @@ import com.mygdx.game.screens.LoadScreen;
 import com.mygdx.game.screens.MainMenuScreen;
 import com.mygdx.game.screens.PlayScreen;
 import com.mygdx.game.screens.TransScreen;
+import com.mygdx.game.ui.UI;
 import com.mygdx.game.utils.Assets;
 
 public class Joc extends Game {
@@ -28,7 +29,7 @@ public class Joc extends Game {
         menu.dispose();
         load.dispose();
         transition.dispose();
-        Assets.INST.man.dispose();
+        Assets.man.dispose();
     }
 
 }

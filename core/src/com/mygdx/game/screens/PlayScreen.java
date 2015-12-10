@@ -28,17 +28,17 @@ public class PlayScreen implements Screen{
         if (!loaded) {  //nu ar trebui sa intre aici
             load();
         }
-        inhandler =new InputMultiplexer(controller,renderer.hud);
+        inhandler =new InputMultiplexer(renderer.ui,controller);
         Gdx.input.setInputProcessor(inhandler);
     }
 
     public void load(){
         controller=new Controller(joc);
         renderer=new Renderer(controller);
-        Assets.INST.man.load(Assets.S_RHIT, Sound.class);
-        Assets.INST.man.load(Assets.S_MHIT, Sound.class);
-        Assets.INST.man.load(Assets.S_LOOT, Sound.class);
-        Assets.INST.man.finishLoading();  //texturi entitati
+        Assets.man.load(Assets.S_RHIT, Sound.class);
+        Assets.man.load(Assets.S_MHIT, Sound.class);
+        Assets.man.load(Assets.S_LOOT, Sound.class);
+        Assets.man.finishLoading();  //texturi entitati
         loaded= true;
     }
 
@@ -76,7 +76,5 @@ public class PlayScreen implements Screen{
         controller.dispose();
     }
 
-    public void transition(){
 
-    }
 }

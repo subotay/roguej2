@@ -21,7 +21,7 @@ public class LoadScreen implements Screen {
     public void show() {
         sr=new ShapeRenderer();
         x=45f; y=65;
-        Assets.INST.initAssets();
+        Assets.initAssets();
     }
 
     @Override
@@ -44,7 +44,7 @@ public class LoadScreen implements Screen {
     }
 
     private void updateAssets(float delta) {
-        if (Assets.INST.man.update())
+        if (Assets.man.update())
             joc.setScreen(joc.menu);
     }
 
