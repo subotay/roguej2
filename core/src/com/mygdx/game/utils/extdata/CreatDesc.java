@@ -34,8 +34,8 @@ public class CreatDesc {
         cre.ranged= ranged;
         cre.energ= energ;
 
-        Assets.INST.loadSprite(sprite);
-        cre.sprite= Assets.INST.getSprite(sprite);
+        Assets.loadSprite(sprite);
+        cre.sprite= Assets.getSprite(sprite);
 
         for (String stt: stts.keys())
             cre.stts.put(Enum.valueOf(Creatura.Stat.class,stt), stts.get(stt));
