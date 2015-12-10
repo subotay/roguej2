@@ -21,8 +21,8 @@ public class Trap extends Obiect {
 
         dmg= trapData.get("dmg").asInt();
         String sprN= trapData.get("sprite").asString();
-        Assets.INST.loadSprite(sprN);
-        sprite= Assets.INST.getSprite(sprN);
+        Assets.loadSprite(sprN);
+        sprite= Assets.getSprite(sprN);
         sprite.setBounds(poz.x, poz.y, 1, 1);
 
         level.cells[(int)poz.x][(int)poz.y]. add(Level.CellFlag.TRAP);

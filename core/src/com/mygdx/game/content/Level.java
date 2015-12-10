@@ -70,8 +70,7 @@ public class Level implements Disposable {
 
         if (erou.act==null) return; //wait input
         System.out.println(erou);       //debug
-        System.out.println("------------------erou " + erou.poz+" turn"+turn +"+actori "+actori.size+" "
-                +" speed"+erou.speed());      //debug
+        System.out.println("---- turn"+turn +"+actori "+actori.size);      //debug
         erou.energ+= erou.speed();
         if (erou.act.cost() <= erou.energ) {
             System.out.println("   //before act: energ" + erou.energ);                           //debug

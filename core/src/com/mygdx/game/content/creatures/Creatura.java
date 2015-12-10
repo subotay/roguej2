@@ -74,22 +74,7 @@ public abstract class Creatura extends Entitate {
     }
 
 
-   /* public Creatura(Level level, MapProperties props) {
-        this.level= level;
-        float   x=props.get("x",float.class),
-                y= props.get("y",float.class),
-                w=props.get("width",float.class),
-                h=props.get("height",float.class);
-        poz.set(x/w,y/h);
-        dumb = props.get("dumb", String.class).equals("true");
 
-        ranged= false;
-        lastpos= new Vector2();
-        target= null;
-        act= new GenAction.Rest(this);  //dir stay
-
-        System.out.print(poz);                                //debug
-    }*/
 
 //--------------------------------------------------
 
@@ -157,20 +142,21 @@ public abstract class Creatura extends Entitate {
 
 
     public  void interractTrap(float x, float y){
-        Assets.INST.man.get(Assets.S_RHIT, Sound.class).play();
+        Assets.man.get(Assets.S_RHIT, Sound.class).play();
 
         //TODO trap activation
     }
 
     public void atkMelee(Creatura target) {
-        Assets.INST.man.get(Assets.S_MHIT, Sound.class).play();
+        Assets.man.get(Assets.S_MHIT, Sound.class).play();
         target.onHit(this);
-
+        target.hp-= 5;
+        if (target.hp<0) target.hp=0;
         //TODO attack
     }
 
     public void atKRange(Creatura target){
-        Assets.INST.man.get(Assets.S_RHIT, Sound.class).play();
+        Assets.man.get(Assets.S_RHIT, Sound.class).play();
         target.onHit(this);
 
         //TODO attack
@@ -225,4 +211,21 @@ public abstract class Creatura extends Entitate {
     private void move(float x, float y){
         poz.x+=x;
         poz.y+=y;
+    }*/
+
+ /* public Creatura(Level level, MapProperties props) {
+        this.level= level;
+        float   x=props.get("x",float.class),
+                y= props.get("y",float.class),
+                w=props.get("width",float.class),
+                h=props.get("height",float.class);
+        poz.set(x/w,y/h);
+        dumb = props.get("dumb", String.class).equals("true");
+
+        ranged= false;
+        lastpos= new Vector2();
+        target= null;
+        act= new GenAction.Rest(this);  //dir stay
+
+        System.out.print(poz);                                //debug
     }*/

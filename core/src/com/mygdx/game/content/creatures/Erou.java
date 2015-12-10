@@ -19,8 +19,8 @@ public class Erou extends Creatura {
     public Erou() {
         stts=new EnumMap<Stat, Integer>(Stat.class);
         act= new GenAction.Rest(this);
-        Assets.INST.loadSprite(Assets.EROU);
-        this.sprite= Assets.INST.getSprite(Assets.EROU);;
+        Assets.loadSprite(Assets.EROU);
+        this.sprite= Assets.getSprite(Assets.EROU);;
     }
 
     @Override
@@ -88,6 +88,6 @@ public class Erou extends Creatura {
 
     @Override
     public String toString() {
-        return "Erou :"+hp+"/"+mhp()+" stamina:"+stam;
+        return "Erou :"+hp+"/"+mhp()+" stamina:"+stam+"target"+(target==null?"none":target);
     }
 }

@@ -12,9 +12,9 @@ public class Door extends Obiect {
         super(level, props);
         // TODO aici ar trebui in fctie de props
         opened= false;
-        Assets.INST.loadSprite(Assets.DOORC);
-        Assets.INST.loadSprite(Assets.DOORO);
-        sprite= Assets.INST.getSprite(Assets.DOORC);
+        Assets.loadSprite(Assets.DOORC);
+        Assets.loadSprite(Assets.DOORO);
+        sprite= Assets.getSprite(Assets.DOORC);
         sprite.setBounds(poz.x, poz.y, 1, 1);
 
         level.cells[(int)poz.x][(int)poz.y]. add(Level.CellFlag.DOOR);
@@ -32,7 +32,7 @@ public class Door extends Obiect {
 
     }
     public void open(){
-        sprite= Assets.INST.getSprite(Assets.DOORO);
+        sprite= Assets.getSprite(Assets.DOORO);
         sprite.setBounds(poz.x, poz.y, 1, 1);
         opened= true;
     }

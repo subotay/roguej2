@@ -99,7 +99,7 @@ public abstract class ErouAction implements Action {
         @Override
         public void executa(){
             //get loot at  xy
-            Assets.INST.man.get(Assets.S_LOOT, Sound.class).play();
+            Assets.man.get(Assets.S_LOOT, Sound.class).play();
             //TODO loot window
         }
     }

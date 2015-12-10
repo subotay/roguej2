@@ -116,6 +116,8 @@ public abstract class GenAction implements Action{
         @Override
         public void executa() {
             System.out.println("    act: resting at "+actor.poz);      //debug
+            actor.hp+=actor.hpreg();
+            if (actor.hp>actor.mhp()) actor.hp= actor.mhp();
             //TODO rest
 
         }
