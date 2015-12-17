@@ -8,25 +8,20 @@ import com.mygdx.game.content.Level;
 import com.mygdx.game.content.creatures.Badguy;
 import com.mygdx.game.content.creatures.Creatura;
 import com.mygdx.game.content.creatures.Npc;
-import com.mygdx.game.content.objects.Container;
-import com.mygdx.game.content.objects.Item;
+import com.mygdx.game.content.objects.items.*;
 
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class LevelDesc {
-    public ObjectMap<String, Array<Vector2>> creaturi;
-    public ObjectMap<String, Array<String>> containers;  //poz-> list of items id
+    public ObjectMap<String, Array<Vector2>> creaturi;    //save actor.id -> home position
+    public ObjectMap<String, ObjectMap<String,Integer>> containers;  //save container pos -> map of (item.id, item amount)
 
-    public LevelDesc(){
-        creaturi= new ObjectMap<String, Array<Vector2>>();
-        containers= new ObjectMap<String, Array<String>>();
-    }
+    public LevelDesc(){ }
 
 
     public void to(Level lvl){
-        System.out.println("Creaturi lvl desc "+creaturi);   //debug
-        System.out.println("Containers lvl desc "+containers);     //debug
+        System.out.println("Creaturi lvl desc:\n   "+creaturi);   //debug
+        System.out.println("Containers lvl desc:\n  "+containers);     //debug
 
         JsonReader reader= new JsonReader();
         JsonValue mobs= reader.parse(Gdx.files.internal("actors/mobs.dat")),
@@ -73,24 +68,62 @@ public class LevelDesc {
             }
         }
 
+        // build loot containers
+        JsonValue
+                weapons= reader.parse(Gdx.files.internal("items/weapons.dat")),
+                equips= reader.parse(Gdx.files.internal("items/equips.dat")),
+                cons= reader.parse(Gdx.files.internal("items/cons.dat")),
+                miscs= reader.parse(Gdx.files.internal("items/miscs.dat"));
+        ItemDesc desc= new ItemDesc();
 
-        //
         for (String poz: containers.keys()){
-            Container c=new Container();
-            c.level= lvl;
-            lvl.loots.add(c);
+            ItemContainer container=new ItemContainer();
+            container.level= lvl;
+            lvl.loots.add(container);
             Scanner sc=new Scanner(poz);
-            c.poz.set(sc.nextFloat(), sc.nextFloat());
-            lvl.cells[((int) c.poz.x)][((int) c.poz.y)].add(Level.CellFlag.LOOT);
+            container.poz.set(sc.nextFloat(), sc.nextFloat());
+            lvl.cells[((int) container.poz.x)][((int) container.poz.y)].add(Level.CellFlag.LOOT);
 
-            Array<String> content=containers.get(poz);
-                for (String itId:content)
-                    c.items.add(new Item(itId));
+            //items inside --  map of (item.id, item amount)
+            ObjectMap<String, Integer> content=containers.get(poz);
+            for (String id:content.keys()){
+                Item it= null;
+                String itd=null;
+                switch (id.charAt(0)){
+                    case 'w':
+                        it= new Weapon();
+                        itd= weapons.get(id).toString();
+                        desc= json.fromJson(WeaponDesc.class, itd.substring(itd.indexOf("{")));
+                        break;
+                    case 'e':
+                        it= new Echipabil();
+                        itd= equips.get(id).toString();
+                        desc= json.fromJson(EchipDesc.class, itd.substring(itd.indexOf("{")));
+                        break;
+                    case 'c':
+                        it= new Consumabil();
+                        itd= cons.get(id).toString();
+                        desc= json.fromJson(ConsDesc.class, itd.substring(itd.indexOf("{")));
+                        break;
+                    case 'm':
+                        it= new Misc();
+                        itd= miscs.get(id).toString();
+                        desc= json.fromJson(ItemDesc.class, itd.substring(itd.indexOf("{")));
+                        break;
+                }
+                it.id= id;
+                desc.to(it);
+
+                container.items.put(it, content.get(id));
+            }
         }
     }
 
-
+    //*****************************************************************
     public void from(Level lvl){
+        creaturi= new ObjectMap<String, Array<Vector2>>();
+        containers= new ObjectMap<String, ObjectMap<String, Integer>>();
+
         for (Creatura actor:lvl.actori)
                 if (creaturi.containsKey(actor.id))
                     creaturi.get(actor.id).add(actor.home);
@@ -101,13 +134,13 @@ public class LevelDesc {
                 }
 
 
-        for (Container cont: lvl.loots){
+        for (ItemContainer cont: lvl.loots){
             if (cont.sprite!=null) continue;  //salvez doar chest, unlooted drop se pierde
 
-            Array<String> content= new Array<String>();
-            for (Item it: cont.items)
-                    content.add(it.id);
-
+            ObjectMap<String, Integer> content= new ObjectMap<String, Integer>();
+            for (Item it: cont.items.keys())  {
+                content.put(it.id, cont.items.get(it)); //id- amount
+            }
             containers.put(cont.poz.x + " " + cont.poz.y, content);
         }
     }

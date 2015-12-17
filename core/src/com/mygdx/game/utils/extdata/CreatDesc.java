@@ -20,9 +20,7 @@ public class CreatDesc {
     public String sprite;
 
 
-    public CreatDesc(){
-        stts=new ObjectMap<String, Integer>();
-    }
+    public CreatDesc(){ }
 
     public void to(Creatura cre){
         cre.STR= STR;

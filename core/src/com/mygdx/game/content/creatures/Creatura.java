@@ -14,7 +14,8 @@ import java.util.LinkedList;
 
 
 public abstract class Creatura extends Entitate {
-    public enum Stat {MHP,HPREG, MSTAM, STAREG, HIT, EVA, SPEEDMULT, FATK,FRES, EATK, ERES, CRIT, ARMOR }
+
+    public enum Stat {MHP,HPREG, MSTAM, STAREG, HIT, EVA, SPEEDMULT, FATK,FRES, EATK, ERES, CRIT, ARMOR, BONDMG }
     public enum Dir{N,NE,E,SE,S,SW,W,NW,STAY;}
 
     public  Creatura target;
@@ -38,7 +39,6 @@ public abstract class Creatura extends Entitate {
     //
     public int hp,stam;
 
-
     public boolean dumb;
     public boolean ranged; //def melee
     public float energ;
@@ -59,10 +59,11 @@ public abstract class Creatura extends Entitate {
     public int fres(){ return VIT-5+ stts.get(Stat.FRES);}
     public int eatk(){ return SPI-5+ stts.get(Stat.EATK);}
     public int eres() { return END-5+ stts.get(Stat.ERES);}
+        //dmg   //+ weapon dmg(erou)
+    public int dmg(){ return  stts.get(Stat.BONDMG ); }
 /* crit direct  //poate depinde de skill
    armor direct
 */
-
 
     public Creatura() {
         stts=new EnumMap<Stat, Integer>(Stat.class);
@@ -72,9 +73,6 @@ public abstract class Creatura extends Entitate {
         path=null;
 //        System.out.print(poz);                                //debug
     }
-
-
-
 
 //--------------------------------------------------
 

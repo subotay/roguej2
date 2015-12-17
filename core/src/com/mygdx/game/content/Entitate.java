@@ -31,4 +31,20 @@ public abstract class Entitate implements Disposable{
     public void dispose() {
 //        sprite.getTexture().dispose();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Entitate entitate = (Entitate) o;
+
+        return id.equals(entitate.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

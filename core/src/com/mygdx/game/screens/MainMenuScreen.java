@@ -16,8 +16,8 @@ import com.mygdx.game.utils.Assets;
 public class MainMenuScreen implements Screen {
     private final Joc joc;
     private Stage stage;
-    private float screenw, screenh;
-    private Cell topcell;
+    Table table;
+    private float screenh;
 
     public MainMenuScreen(Joc joc) {this.joc = joc;}
 
@@ -27,15 +27,14 @@ public class MainMenuScreen implements Screen {
     }
 
     private void initStage() {
-        screenw= Gdx.graphics.getWidth();
         screenh= Gdx.graphics.getHeight();
 
         stage=new Stage(new ScreenViewport());
-//        stage.setDebugAll(true);        //debug
+        //        stage.setDebugAll(true);        //debug
         Gdx.input.setInputProcessor(stage);
 
         stage.clear();
-        Table table=new Table(Assets.skin);
+        table=new Table(Assets.skin);
         stage.addActor(table);
         table.setFillParent(true);
 
@@ -43,13 +42,13 @@ public class MainMenuScreen implements Screen {
                         opt=new TextButton("OPTIONS", Assets.skin),
                         exit=new TextButton("EXIT",Assets.skin);
 
-//        opt.setStyle(skin.get("toggle",TextButton.TextButtonStyle.class));
+        table.defaults().width(160).height(50).padBottom(20).padRight(40).left();
         table.top().right();
-        topcell= table.add(play).width(160).height(50).padBottom(20).padTop(screenh*.25f);
+        table.add(play).padTop(screenh * .25f);
         table.row();
-        table.add(opt).width(160).height(50).padBottom(20);
+        table.add(opt);
         table.row();
-        table.add(exit).width(160).height(50).padBottom(20);
+        table.add(exit);
 
         play.addListener(new ChangeListener() {
             @Override
@@ -80,10 +79,9 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        screenw= width;
         screenh= height;
         stage.getViewport().update(width, height,true);
-        topcell.padTop(screenh * .25f);
+        table.getCells().get(0).padTop(screenh * .25f);
     }
 
     @Override

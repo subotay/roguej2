@@ -45,9 +45,9 @@ public class MapUtils {
 
 
 
-/* if          (ob instanceof Container){
+/* if          (ob instanceof ItemContainer){
                     c.level.cells[(int)ob.poz.x][(int)ob.poz.y]. add(CellFlag.LOOT);
-                    c.level.loots.add((Container)ob);
+                    c.level.loots.add((ItemContainer)ob);
                 } else
                 if (ob instanceof Trigger) {
 //                    c.level.cells[(int)ob.poz.x][(int)ob.poz.y]. add(CellFlag.TRIGGER);

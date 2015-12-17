@@ -17,7 +17,6 @@ import com.mygdx.game.utils.Constants;
 import com.mygdx.game.utils.MapUtils;
 import com.mygdx.game.utils.extdata.GameData;
 
-import static com.mygdx.game.content.Level.CellFlag.LOOT;
 import static com.mygdx.game.content.Level.CellFlag.TRIGGER;
 
 public class Controller extends InputAdapter implements Disposable {
@@ -116,12 +115,7 @@ public class Controller extends InputAdapter implements Disposable {
                 level.erou.walkDir= Creatura.Dir.NE;
                 level.erou.act= new ErouAction.Walk(level.erou);
                 break;
-            case Input.Keys.G:
-                if (level.cells[(int) level.erou.poz.x][((int) level.erou.poz.y)].contains(LOOT)){
-//                    level.erou.STR++;
-                    level.erou.act= new ErouAction.InteractLoot(level.erou,level.erou.poz.x, level.erou.poz.y);
-                }
-                break;
+
             case Input.Keys.ENTER:
                 if (level.cells[((int) level.erou.poz.x)][(int)level.erou.poz.y].contains(TRIGGER)){
                     Trigger trig= level.getTriggerAt(level.erou.poz.x, level.erou.poz.y);
@@ -156,59 +150,3 @@ public class Controller extends InputAdapter implements Disposable {
 }
 
 
- /* @Override
-    public boolean keyTyped(char character) {
-        switch (character){
-            case Input.Keys.W:
-                level.erou.walkDir= Creatura.Dir.N;
-                level.erou.act= new ErouAction.WalkAt(level.erou);
-                break;
-            case Input.Keys.NUMPAD_2:
-                level.erou.walkDir= Creatura.Dir.S;
-                level.erou.act= new ErouAction.WalkAt(level.erou);
-                break;
-            case Input.Keys.NUMPAD_4:
-                level.erou.walkDir= Creatura.Dir.W;
-                level.erou.act= new ErouAction.WalkAt(level.erou);
-                break;
-            case Input.Keys.NUMPAD_6:
-                level.erou.walkDir= Creatura.Dir.E;
-                level.erou.act= new ErouAction.WalkAt(level.erou);
-                break;
-            case  Input.Keys.NUMPAD_5:
-                level.erou.walkDir= Creatura.Dir.STAY;
-                level.erou.act= new GenAction.Rest(level.erou);
-                break;
-            case  Input.Keys.NUMPAD_1:
-                level.erou.walkDir= Creatura.Dir.SW;
-                level.erou.act= new ErouAction.WalkAt(level.erou);
-                break;
-            case  Input.Keys.NUMPAD_3:
-                level.erou.walkDir= Creatura.Dir.SE;
-                level.erou.act= new ErouAction.WalkAt(level.erou);
-                break;
-            case  Input.Keys.NUMPAD_7:
-                level.erou.walkDir= Creatura.Dir.NW;
-                level.erou.act= new ErouAction.WalkAt(level.erou);
-                break;
-            case  Input.Keys.NUMPAD_9:
-                level.erou.walkDir= Creatura.Dir.NE;
-                level.erou.act= new ErouAction.WalkAt(level.erou);
-                break;
-            case Input.Keys.G:
-                if (level.cells[(int) level.erou.poz.x][((int) level.erou.poz.y)].contains(LOOT)){
-                    level.erou.act= new ErouAction.InteractLoot(
-                            level.erou, level.getLootAt(level.erou.poz.x, level.erou.poz.y));
-                }
-                break;
-            default:
-        }
-        return true;
-    }*/
-
-
-                    /*HashMap <String, String> data=new HashMap<String, String>();
-                    data.put("nivel",trig.nivel);
-                    data.put("erou_x", trig.pozn[0]+"");
-                    data.put("erou_y", trig.pozn[1] + "");
-                    GameData.INST.storeData(data);*/

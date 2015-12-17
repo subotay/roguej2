@@ -15,7 +15,7 @@ public class Npc extends Creatura {
 
     @Override
     public void update(float delta) {
-        System.out.println("            //update    target" + (target != null ? target.poz : "none"));     //debug
+        System.out.println("  //update    target" + (target != null ? target.poz : "none"));     //debug
 
         if (level.fov[(int)poz.x][(int)poz.y] && level.erou.target!=null
                 &&(Pathfind.cebdist((int) poz.x, (int) poz.y,
@@ -30,7 +30,7 @@ public class Npc extends Creatura {
                 }else {
                     findpath(target);
                     if (path.size() > 0) {
-                        System.out.println(">>>>> path init,step " + step);   //debug
+                        System.out.println("        >>>>> path init,step " + step);   //debug
                         Pathfind.Node nxt = path.get(step);
                         act= new GenAction.WalkAt(this, nxt.x, nxt.y);
                     } else {
@@ -43,7 +43,7 @@ public class Npc extends Creatura {
                 if (path == null) {
                     findpath(target);
                     if (path.size() > 0) {
-                        System.out.println(">>>>> path init,step " + step);   //debug
+                        System.out.println("        >>>>> path init,step " + step);   //debug
                         Pathfind.Node nxt = path.get(step);
                         act= new GenAction.WalkAt(this, nxt.x, nxt.y);
                     } else {
@@ -91,7 +91,7 @@ public class Npc extends Creatura {
         }
 
         sprite.setBounds(poz.x, poz.y, 1, 1);
-        System.out.println("            update//");     //debug
+        System.out.println("  update//");     //debug
     }
 
     private void findpath(Creatura target) {

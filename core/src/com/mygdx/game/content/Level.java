@@ -10,7 +10,7 @@ import com.mygdx.game.content.creatures.Creatura;
 import com.mygdx.game.content.creatures.Erou;
 import com.mygdx.game.content.creatures.Npc;
 import com.mygdx.game.content.objects.Door;
-import com.mygdx.game.content.objects.Container;
+import com.mygdx.game.content.objects.items.ItemContainer;
 import com.mygdx.game.content.objects.Trap;
 import com.mygdx.game.content.objects.Trigger;
 import com.mygdx.game.utils.Fov;
@@ -50,27 +50,27 @@ public class Level implements Disposable {
         //  -----------------------  dynamic data
     public Array<Creatura> actori;
     public Array<Trap> traps;
-    public Array<Container> loots;
+    public Array<ItemContainer> loots;
         // ----------------------------------
     public Level() {
         actori =new Array<Creatura>();
         doors= new Array<Door>();
         triggs= new Array<Trigger>();
         traps= new Array<Trap>();
-        loots= new Array<Container>();
-        doors.ordered= true;
-        triggs.ordered= true;
-        traps.ordered= true;
-        loots.ordered= true;
-        actori.ordered= true;
+        loots= new Array<ItemContainer>();
+//        doors.ordered= true;
+//        triggs.ordered= true;
+//        traps.ordered= true;
+//        loots.ordered= true;
+//        actori.ordered= true;
     }
 
 
     public void update(float delta) {
 
         if (erou.act==null) return; //wait input
-        System.out.println(erou);       //debug
-        System.out.println("---- turn"+turn +"+actori "+actori.size);      //debug
+        System.out.println(erou);        //debug
+        System.out.println("------------ turn"+turn );      //debug
         erou.energ+= erou.speed();
         if (erou.act.cost() <= erou.energ) {
             System.out.println("   //before act: energ" + erou.energ);                           //debug
@@ -85,7 +85,7 @@ public class Level implements Disposable {
         turn++;
 
 
-        for (Trap tarp: traps){
+        for (Trap trap: traps){
 //            System.out.println(tarp);
             //TODO trap action
         }
@@ -122,7 +122,7 @@ public class Level implements Disposable {
         for (Door o:doors)
             if (o.poz.dst(erou.poz)<=erou.vraza +1)
                 o.render(delta, batch);
-        for (Container o:loots)
+        for (ItemContainer o:loots)
             if (o.poz.dst(erou.poz)<=erou.vraza +1)
                 o.render(delta, batch);
         //triggers invis.
@@ -205,8 +205,8 @@ public class Level implements Disposable {
         return null;
     }
 
-    public Container getLootAt(float x, float y){
-        for (Container ob: loots)
+    public ItemContainer getLootAt(float x, float y){
+        for (ItemContainer ob: loots)
             if (ob.poz.x==x &&  ob.poz.y==y  )
                 return ob;
         return null;
@@ -239,12 +239,6 @@ public class Level implements Disposable {
 }
 
 
-/* public void debug(){
-        *//*for(Entitate ent: actori){
-            System.out.println("");
-        }*//*
-    }*/
-
 
 /*//----------------------------------------v1 render after each actor ---------------------------
         Entitate entitate= actori.get(currActor);
@@ -267,7 +261,6 @@ public class Level implements Disposable {
         } else{
             Trap trap=(Trap) entitate;
             System.out.println("trap "+currActor+ " "+ trap.poz);           //debug
-            //TODO trap action
         }
 
         if (currActor == actori.size) turn++;

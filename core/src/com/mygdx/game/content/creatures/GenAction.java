@@ -132,8 +132,10 @@ public abstract class GenAction implements Action{
 
         @Override
         public void executa() {
-            System.out.println("     act: range attack on"+ actor.target.poz);
-            actor.atKRange(actor.target);
+            if (actor.target != null) {
+                System.out.println("     act: range attack on"+ actor.target.poz);
+                actor.atKRange(actor.target);
+            }
         }
     }
 

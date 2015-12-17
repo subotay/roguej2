@@ -2,6 +2,7 @@ package com.mygdx.game.content.objects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.content.Level;
 import com.mygdx.game.utils.Assets;
 
