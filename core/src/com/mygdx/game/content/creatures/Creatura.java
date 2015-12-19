@@ -15,17 +15,33 @@ import java.util.LinkedList;
 
 public abstract class Creatura extends Entitate {
 
-    public enum Stat {MHP,HPREG, MSTAM, STAREG, HIT, EVA, SPEEDMULT, FATK,FRES, EATK, ERES, CRIT, ARMOR, BONDMG }
+
+    public enum Stat {
+        MHP,HPREG,
+        MSTAM, STAREG,
+        HIT, EVA,
+        FATK,FRES,
+        EATK, ERES,
+        CRIT,
+        ARMOR,
+        BONDMG
+    }
     public enum Dir{N,NE,E,SE,S,SW,W,NW,STAY;}
 
     public  Creatura target;
     public   Action act;
+
     protected  Vector2 lastpos; //last known target position
     protected  LinkedList<Pathfind.Node> path;
     protected  int step;
+
     public  Dir walkDir=Dir.STAY;
     public  Level level;
     public Vector2 home;
+    public String name;
+    //description
+
+    public boolean slowed, hasted;
 
     /*------------------------------------------*/
     //  attributes
@@ -40,20 +56,21 @@ public abstract class Creatura extends Entitate {
     public int hp,stam;
 
     public boolean dumb;
-    public boolean ranged; //def melee
+    public boolean melee; //def melee
     public float energ;
-    public float speed;
+    public int atkcost;
 
     /*------------------------------------------*/
 
     public int mhp(){ return VIT*10+ stts.get(Stat.MHP); }
     public int mstam(){ return END*2+ stts.get(Stat.MSTAM);}
-    public float hpreg(){ return VIT*.1f+ stts.get(Stat.HPREG); }
+    float accHp;
+    public float hpreg(){ return VIT*.2f+ stts.get(Stat.HPREG); }
+    float accStam;
     public float stareg(){ return END*.2f+ stts.get(Stat.STAREG);}
 
     public int hit(){ return (STR+ AGI-10)/2+ stts.get(Stat.HIT);}
     public int eva(){ return AGI-5+ stts.get(Stat.EVA);}
-    public int speed(){ return (END+10)   *   stts.get(Stat.SPEEDMULT);}
 
     public int fatk(){ return STR-5+ stts.get(Stat.FATK);}
     public int fres(){ return VIT-5+ stts.get(Stat.FRES);}
@@ -71,7 +88,6 @@ public abstract class Creatura extends Entitate {
         target= null;
         act= new GenAction.Rest(this);  //dir stay
         path=null;
-//        System.out.print(poz);                                //debug
     }
 
 //--------------------------------------------------
@@ -138,6 +154,39 @@ public abstract class Creatura extends Entitate {
 
     public abstract boolean invalid(int x, int  y);
 
+    /***********************************************************************************/
+    /** update end turn*/
+    @Override
+    public void update(float delta) {
+        if (hp < mhp()) {
+            accHp+= hpreg();
+            hp+= Math.floor(accHp);
+            accHp-=Math.floor(accHp);
+            if (hp>=mhp()){
+                hp=mhp();
+                accHp=0;
+            }
+        }
+        if (stam >= mstam()) {
+            accStam+= stareg();
+            stam+= Math.floor(accStam);
+            accStam-= Math.floor(accStam);
+            if (stam>=mstam()){
+                stam=mstam();
+                accStam=0;
+            }
+        }
+    }
+
+    /**  after act only */
+    public void updateSprite(float delta){
+        sprite.setBounds(poz.x, poz.y, 1, 1);
+    };
+
+    /**  each 20 ticks sau each turn ?*/
+    public abstract void updateAI(float delta);
+
+    /********************************************************************************************/
 
     public  void interractTrap(float x, float y){
         Assets.man.get(Assets.S_RHIT, Sound.class).play();
@@ -147,39 +196,33 @@ public abstract class Creatura extends Entitate {
 
     public void atkMelee(Creatura target) {
         Assets.man.get(Assets.S_MHIT, Sound.class).play();
-        target.onHit(this);
-        target.hp-= 5;
+        target.onHitBy(this);
+        target.hp-= (dmg()- target.stts.get(Stat.ARMOR));
         if (target.hp<0) target.hp=0;
         //TODO attack
     }
 
     public void atKRange(Creatura target){
         Assets.man.get(Assets.S_RHIT, Sound.class).play();
-        target.onHit(this);
-
+        target.onHitBy(this);
+        target.hp-= (dmg()- target.stts.get(Stat.ARMOR));
+        if (target.hp<0) target.hp=0;
         //TODO attack
     }
 
-    public void onHit(Creatura hitter){
+    public void onHitBy(Creatura hitter){
         target= hitter;
     };
+
+    public void onDeath(){
+
+    }
 
 
 //--------------------------------------------
     @Override public String toString() {return "Creatura "+id+" "+poz+" hp:"+hp+"/"+mhp();}
 
 }
-
-/*  public static Creatura makeCreatura(Level level, MapProperties props){
-        String tip=props.get("tip",String.class);
-        Creatura creatura= null;
-        if (tip.equals("monstru"))
-            creatura= new Badguy(level,props);
-        else  if (tip.equals("npc"))
-            creatura= new Npc(level,props);
-        System.out.println(tip);                                          //debug
-        return creatura;
-    }*/
 
 
 /*   *//**  1 pas doar *//*
@@ -211,19 +254,3 @@ public abstract class Creatura extends Entitate {
         poz.y+=y;
     }*/
 
- /* public Creatura(Level level, MapProperties props) {
-        this.level= level;
-        float   x=props.get("x",float.class),
-                y= props.get("y",float.class),
-                w=props.get("width",float.class),
-                h=props.get("height",float.class);
-        poz.set(x/w,y/h);
-        dumb = props.get("dumb", String.class).equals("true");
-
-        ranged= false;
-        lastpos= new Vector2();
-        target= null;
-        act= new GenAction.Rest(this);  //dir stay
-
-        System.out.print(poz);                                //debug
-    }*/

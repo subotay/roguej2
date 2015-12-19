@@ -19,8 +19,7 @@ public class ErouDesc {
 
     int hp,stam,lvl, xp;
     boolean dumb;
-    boolean ranged; //def melee
-    float energ;
+    boolean melee; //def melee
     int vraza;
 
     String levelName;
@@ -43,8 +42,7 @@ public class ErouDesc {
         lvl=er.lvl;
         xp=er.xp;
         dumb=er.dumb;
-        ranged=er.ranged;
-        energ=er.energ;
+        melee=er.melee;
         vraza=er.vraza;
         levelName=er.levelName;
         stts= new ObjectMap<String, Integer>();
@@ -76,8 +74,7 @@ public class ErouDesc {
         er.lvl=lvl;
         er.xp=xp;
         er.dumb=dumb;
-        er.ranged=ranged;
-        er.energ=energ;
+        er.melee=melee;
         er.vraza=vraza;
         er.levelName=levelName;
 
@@ -160,8 +157,5 @@ public class ErouDesc {
             er.eqp.put(Enum.valueOf(Erou.EqpSlot.class, slot), it);
         }
 
-        System.out.println("erou inv: "+er.inv);    //debug
-        System.out.println();
-        System.out.println("erou equip: "+er.eqp);  //debug
     }
 }

@@ -23,7 +23,7 @@ public abstract class Obiect extends Entitate  {
                 w=props.get("width",float.class),
                 h=props.get("height",float.class);
         poz.set(x/w,y/h);
-        System.out.print(poz);      //debug
+//        System.out.print(poz);      //debug
     }
 
     public static void makeObiect(Level level, MapProperties props){

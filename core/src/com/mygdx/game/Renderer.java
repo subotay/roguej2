@@ -30,11 +30,11 @@ public class Renderer implements Disposable{
     }
 
     public void init() {
-        cam=new OrthographicCamera();
-        viewcam = new FitViewport( VIEW_W, VIEW_H, cam);
-//        viewcam.apply();
-//        cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
-//        cam.update();
+        cam=contr.cam;
+        viewcam = contr.viewcam;
+        viewcam.apply();
+        cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
+        cam.update();
 
         ui = new UI(new ScreenViewport(),contr);
         batch=new SpriteBatch();
@@ -70,7 +70,7 @@ public class Renderer implements Disposable{
 
     public void resize(int width, int height) {
         viewcam.update(width, height);
-//        cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
+        cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
         ui.getViewport().update(width, height,true);
         ui.rebuild();
     }

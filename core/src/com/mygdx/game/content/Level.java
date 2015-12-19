@@ -1,5 +1,6 @@
 package com.mygdx.game.content;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
@@ -22,9 +23,10 @@ import java.util.EnumSet;
  * */
 public class Level implements Disposable {
     public String numeNivel;
-    public transient int worldw, worldh, tilew, tileh;
-//    private int currActor=0;
-    public transient long turn=0;  //?????
+    public int worldw, worldh, tilew, tileh;
+
+    public int turn=0;
+    public static final int TICKS=20;
 
     public enum CellFlag{ //  TODO wip
         MONST,
@@ -41,11 +43,11 @@ public class Level implements Disposable {
         //VISIB,  //de catre player, dc un monstru e la loc., e in range (vice versa)
     }
     /* TODO  de updatat la modificare celula*/
-    public transient EnumSet<CellFlag> [][] cells;
-    public transient boolean[][] fov;
-    public transient Erou erou;
-    public transient Array<Door> doors;
-    public transient Array<Trigger> triggs;
+    public  EnumSet<CellFlag> [][] cells;
+    public  boolean[][] fov;
+    public  Erou erou;
+    public  Array<Door> doors;
+    public  Array<Trigger> triggs;
 
         //  -----------------------  dynamic data
     public Array<Creatura> actori;
@@ -58,51 +60,73 @@ public class Level implements Disposable {
         triggs= new Array<Trigger>();
         traps= new Array<Trap>();
         loots= new Array<ItemContainer>();
-//        doors.ordered= true;
-//        triggs.ordered= true;
-//        traps.ordered= true;
-//        loots.ordered= true;
-//        actori.ordered= true;
+        doors.ordered= false;
+        triggs.ordered= false;  //??TODO order vs unorder ??
+        traps.ordered= false;
+        loots.ordered= false;
+        actori.ordered= false;
     }
 
 
     public void update(float delta) {
-
         if (erou.act==null) return; //wait input
-        System.out.println(erou);        //debug
-        System.out.println("------------ turn"+turn );      //debug
-        erou.energ+= erou.speed();
+
+        if (erou.hp<=0 ) {
+            erou.dead= true;
+            cells[((int) erou.poz.x)][(int)erou.poz.y].remove(CellFlag.HERO);
+            return;
+        }
+
+        turn=(turn+TICKS)% 100;
+
+        Gdx.app.log("ticks ", turn + "");
+        Gdx.app.log("erou ", erou.act.getClass().getSimpleName());
+
+        erou.energ+= TICKS*(erou.slowed? .5f: 1)*(erou.hasted? 2:1);
         if (erou.act.cost() <= erou.energ) {
-            System.out.println("   //before act: energ" + erou.energ);                           //debug
             erou.act.executa();
             erou.energ-= erou.act.cost();
+            Gdx.app.log("  act executed cost", erou.act.cost()+"");
             erou.act= null;
-            System.out.println("    //after act: energ" + erou.energ);                 //debug
+            erou.updateSprite(delta);  //update sprite
+            updateFov();
         }
-        erou.update(delta);
+        erou.updateAI(delta);//   deocamdata nu face nimic TODO?
 
-        updateFov();
-        turn++;
+        if (turn==0){
+            erou.update(delta);
 
-
-        for (Trap trap: traps){
-//            System.out.println(tarp);
-            //TODO trap action
+            for (Trap trap: traps) {}   //TODO trap action
         }
 
-        for (Creatura creatura: actori) {
-            if (creatura.act == null) continue;
-            System.out.println(creatura);                           //debug
-            creatura.energ += creatura.speed();
+        for (int i=0; i<actori.size; i++) {
+            Creatura creatura= actori.get(i);
+            Gdx.app.log("creatura ", creatura.name +creatura.poz+ " act" + (creatura.act == null ? "null" : creatura.act.getClass().getSimpleName()));
+
+            if (creatura.hp<=0) {  //dead
+                cells[((int) creatura.poz.x)][((int) creatura.poz.y)]
+                        .remove((creatura instanceof Badguy ? CellFlag.MONST : CellFlag.NPC));
+                actori.removeValue(creatura, true);
+                i--;
+                continue;
+            }
+
+            creatura.energ += TICKS*(creatura.slowed? .5f: 1)*(creatura.hasted? 2:1);
+
             if (creatura.act.cost() <= creatura.energ) {
-                System.out.println("    //before act: energ" + creatura.energ);          //debug
                 creatura.act.executa();
                 creatura.energ -= creatura.act.cost();
+                Gdx.app.log("  act executed cost", creatura.act.cost()+"");
                 creatura.act = null;
-                System.out.println("    //after act: energ" + creatura.energ);        //debug
+                creatura.updateSprite(delta);
+                creatura.updateAI(delta);
             }
-            creatura.update(delta);
+            if (turn == 0) {
+                creatura.update(delta);
+            }
         }
+
+        if (turn==0)       Gdx.app.log("     //endturn", "");
 
     }
 
@@ -155,7 +179,6 @@ public class Level implements Disposable {
         Rectangle rect=obj.getRectangle();
         float x=rect.getX()/tilew, y= rect.getY()/tileh
                 ,w= rect.getWidth()/tilew, h= rect.getHeight()/tileh;
-//        System.out.println("(x" + x + " ,y" + y + "; w" + w + " h" + h + ")wall");                  //debug
         for (int i = (int)x; i <(int) x+w; i++) {
             for (int j = (int)y; j <(int)y+h; j++) {
                 cells[i][j].add(CellFlag.BLOC_MV);
@@ -169,7 +192,6 @@ public class Level implements Disposable {
         Rectangle rect=obj.getRectangle();
         float x=rect.getX()/tilew, y= rect.getY()/tileh
                 ,w= rect.getWidth()/tilew, h= rect.getHeight()/tileh;
-//        System.out.println("(x"+x+" ,y"+y+"; w"+w+" h"+h+")decor");                  //debug
         for (int i = (int) x; i <(int) x+w; i++) {
             for (int j = (int)y; j <(int)y+h; j++) {
                 cells[i][j].add(CellFlag.BLOC_MV);

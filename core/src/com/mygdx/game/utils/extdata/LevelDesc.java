@@ -20,8 +20,6 @@ public class LevelDesc {
 
 
     public void to(Level lvl){
-        System.out.println("Creaturi lvl desc:\n   "+creaturi);   //debug
-        System.out.println("Containers lvl desc:\n  "+containers);     //debug
 
         JsonReader reader= new JsonReader();
         JsonValue mobs= reader.parse(Gdx.files.internal("actors/mobs.dat")),

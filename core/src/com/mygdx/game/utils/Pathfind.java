@@ -1,12 +1,15 @@
 package com.mygdx.game.utils;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Pool;
 import com.mygdx.game.content.Level;
 import com.mygdx.game.content.creatures.Creatura;
 
 import java.util.*;
 
 public class Pathfind {
+
+//    static Pool<Node> nodePool;
 
     public static class Node implements Comparable<Node>{
         public int x,y, f,g;
@@ -129,6 +132,7 @@ public class Pathfind {
 
     /* jps partial ?*/
     public static LinkedList<Node> pathJPS(Creatura creat, int ex, int ey){
+
         Pathfind.creatura= creat;
         Node start= new Node((int)creatura.poz.x, (int)creatura.poz.y),
              end= new Node(ex,ey);
@@ -147,7 +151,7 @@ public class Pathfind {
             Node curr= open.poll();
             if (curr.equals(end)) {
                 pt= (LinkedList<Node>) makePath(parr,curr);
-                System.out.println("pathfind nr evals: "+debug);
+//                System.out.println("pathfind nr evals: "+debug);
                 return pt;
             }
             closed.add(curr);
@@ -182,7 +186,10 @@ public class Pathfind {
         };
     }
 
-   /*  *//* a star*//*
+}
+
+
+/*  *//* a star*//*
     public static LinkedList<Node> path(Creatura creat, int ex, int ey){
         Pathfind.creatura= creat;
         Node start= new Node((int)creatura.poz.x, (int)creatura.poz.y),
@@ -228,4 +235,3 @@ public class Pathfind {
         }
         return pt;
     }*/
-}

@@ -7,18 +7,18 @@ import com.mygdx.game.utils.Assets;
 
 public class CreatDesc {
     //  attributes
-    public int STR;
-    public int AGI;
-    public int VIT;
-    public int END;
-    public int SPI;
+     int STR;
+     int AGI;
+     int VIT;
+     int END;
+     int SPI;
     //
-    public ObjectMap<String, Integer> stts;
-    public boolean dumb;
-    protected boolean ranged; //def melee
-    public float energ;
-    public String sprite;
-
+     ObjectMap<String, Integer> stts;
+     boolean dumb;
+     boolean melee; //def melee
+     String sprite;
+     String name;
+     int atkcost;
 
     public CreatDesc(){ }
 
@@ -29,8 +29,9 @@ public class CreatDesc {
         cre.END=END;
         cre.SPI=SPI;
         cre.dumb= dumb;
-        cre.ranged= ranged;
-        cre.energ= energ;
+        cre.melee= melee;
+        cre.name= name;
+        cre.atkcost=atkcost;
 
         Assets.loadSprite(sprite);
         cre.sprite= Assets.getSprite(sprite);
@@ -52,7 +53,7 @@ public class CreatDesc {
         END=cre.END;
         SPI=cre.SPI;
         dumb= cre.dumb;
-        ranged= cre.ranged;
+        melee= cre.melee;
 //        energ= cre.energ;
 
         for (Creatura.Stat st: cre.stts.keySet()){

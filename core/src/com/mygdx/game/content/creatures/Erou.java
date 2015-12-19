@@ -17,6 +17,8 @@ public class Erou extends Creatura {
     public int lvl, xp;
     public static final int BRAZA = 6;
 
+    public boolean dead;
+
     public int vraza;
     public  String levelName;
 
@@ -66,12 +68,13 @@ public class Erou extends Creatura {
     public Erou() {
         stts=new EnumMap<Stat, Integer>(Stat.class);
         eqp = new EnumMap<EqpSlot, Item>(EqpSlot.class);
-
         inv = new ItemContainer();
-        act= new GenAction.Rest(this);
         Assets.loadSprite(Assets.EROU);
         this.sprite= Assets.getSprite(Assets.EROU);;
+
+        act= new GenAction.Rest(this);
     }
+
 
     //TODO dual wield dmg ??
     @Override
@@ -80,10 +83,8 @@ public class Erou extends Creatura {
         return stts.get(Stat.BONDMG)+ (wep!=null ? wep.dmg: 0);
     }
 
-    @Override
-    public void update(float delta) {
-        sprite.setBounds(poz.x, poz.y, 1, 1);
-    }
+        @Override
+    public void updateAI(float delta) { }
 
     @Override
     public void render(float delta, SpriteBatch batch) {
@@ -123,12 +124,20 @@ public class Erou extends Creatura {
     }
 
     @Override
-    public void atkMelee(Creatura target) {super.atkMelee(target);}
+    public void atkMelee(Creatura target) {
+        super.atkMelee(target);
+        this.target= target;
+    }
 
     @Override
-    public void onHit(Creatura hitter) {
-        super.onHit(hitter);
+    public void atKRange(Creatura target) {
+        super.atKRange(target);
+        this.target= target;
+    }
 
+    @Override
+    public void onHitBy(Creatura hitter) {
+//        super.onHitBy(hitter); //dont change target on hit
     }
 
 

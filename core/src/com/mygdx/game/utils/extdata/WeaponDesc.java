@@ -7,6 +7,7 @@ public class WeaponDesc extends EchipDesc {
     //************
     int dmg;
     boolean melee, onehand;
+    int atkcost;
     //*******************
 
     public WeaponDesc() {}
@@ -19,5 +20,6 @@ public class WeaponDesc extends EchipDesc {
         wit.dmg= dmg;
         wit.melee= melee;
         wit.onehand= onehand;
+        wit.atkcost =atkcost;
     }
 }

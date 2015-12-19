@@ -10,7 +10,7 @@ import static com.mygdx.game.content.Level.CellFlag.*;
 
 public abstract class GenAction implements Action{
     public final Creatura actor;
-    public final int cost; //def 100
+    public int cost; //def 100
 
     public GenAction(Creatura actor){
         this.actor= actor;
@@ -49,7 +49,7 @@ public abstract class GenAction implements Action{
         public void executa() {
             float nx=actor.poz.x+ MathUtils.clamp(x -actor.poz.x,-1,1),
                     ny= actor.poz.y+ MathUtils.clamp(y -actor.poz.y, -1,1);
-            System.out.println("act walking: opos:"+actor.poz+" npos:"+new Vector2(nx,ny)+" fpos:"+new Vector2(x,y));        //debug
+//            System.out.println("act walking: opos:"+actor.poz+" npos:"+new Vector2(nx,ny)+" fpos:"+new Vector2(x,y));        //debug
 
             if (nx==x && ny==y)  actor.step++;
 
@@ -106,6 +106,8 @@ public abstract class GenAction implements Action{
     }
 
 
+
+    /**  deocamdata face acelasi lucru ca si update end turn*/
     public static class Rest extends GenAction {
         public Rest(Creatura actor) {super(actor);}
 
@@ -115,11 +117,24 @@ public abstract class GenAction implements Action{
 
         @Override
         public void executa() {
-            System.out.println("    act: resting at "+actor.poz);      //debug
-            actor.hp+=actor.hpreg();
-            if (actor.hp>actor.mhp()) actor.hp= actor.mhp();
-            //TODO rest
-
+            if (actor.hp < actor.mhp()) {
+                actor.accHp+= actor.hpreg();
+                actor.hp+= Math.floor(actor.accHp);
+                actor.accHp-=Math.floor(actor.accHp);
+                if (actor.hp>=actor.mhp()){
+                    actor.hp=actor.mhp();
+                    actor.accHp=0;
+                }
+            }
+            if (actor.stam >= actor.mstam()) {
+                actor.accStam+= actor.stareg();
+                actor.stam+= Math.floor(actor.accStam);
+                actor.accStam-= Math.floor(actor.accStam);
+                if (actor.stam>=actor.mstam()){
+                    actor.stam=actor.mstam();
+                    actor.accStam=0;
+                }
+            }
         }
     }
 
@@ -133,7 +148,7 @@ public abstract class GenAction implements Action{
         @Override
         public void executa() {
             if (actor.target != null) {
-                System.out.println("     act: range attack on"+ actor.target.poz);
+//                System.out.println("     act: range attack on"+ actor.target.poz);      //debug
                 actor.atKRange(actor.target);
             }
         }

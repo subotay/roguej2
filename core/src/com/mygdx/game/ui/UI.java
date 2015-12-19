@@ -3,12 +3,16 @@ package com.mygdx.game.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Controller;
 import com.mygdx.game.content.Level;
@@ -24,7 +28,8 @@ public class UI  extends Stage {
 
     /*** components ******************************/
         //stage
-    private Table hud, targetDat, actionbar ;
+    private Table hud, eroDat, targetDat, rbut,
+                       actionbar ;
         //loot+inventory
     private UiContainer inventory,  loot;
     private Window invW, lootW;
@@ -55,6 +60,8 @@ public class UI  extends Stage {
         addActor(lootW);
         buildCharWin();
         addActor(charW);
+
+
     }
 
     private void buildInvWin() {
@@ -150,33 +157,47 @@ public class UI  extends Stage {
 
     private void buildHud() {
         hud.setFillParent(true);
+        hud.setDebug(true);     //debug
         hud.left().top();
-        hud.row().expand();
+
 
             //data erou (bars+ buffs)
-        Table erodat= new Table();
-        ResBar hpbar= new ResBar(Assets.skin.getDrawable("borderbar"), Assets.skin.getDrawable("redbar"),contr.level.erou);
-        erodat.add(hpbar).size(scrw / 5, 15).top().left().pad(3);;
-        erodat.row();
-        erodat.add(new ResBar(Assets.skin.getDrawable("borderbar"), Assets.skin.getDrawable("greenbar"), contr.level.erou) {
-            { val = (float) cre.stam / cre.mstam();}
-            @Override public void act(float delta) {
+        eroDat = new Table();
+        hud.add(eroDat).align(Align.topLeft).width(scrw * .3f).expandY();
+        eroDat.top().left();
+        ResBar hpbar= new ResBar(Assets.skin.getDrawable("borderbar"),
+                Assets.skin.getDrawable("redbar"),contr.level.erou);
+        eroDat.add(hpbar).size(scrw / 5, 15).align(Align.topLeft).pad(3);;
+        eroDat.row();
+        eroDat.add(new ResBar(Assets.skin.getDrawable("borderbar"),
+                Assets.skin.getDrawable("greenbar"), contr.level.erou) {
+            {
                 val = (float) cre.stam / cre.mstam();
             }
-        }).size(scrw/5, 15 ).top().left().pad(3);
-        hud.add(erodat).top().left();
+
+            @Override
+            public void act(float delta) {
+                val = (float) cre.stam / cre.mstam();
+            }
+        }).size(scrw / 5, 15).align(Align.topLeft).pad(3);
 
             //target data(bar+buffs)
         targetDat =new Table();
+        hud.add(targetDat).top().width(scrw* .6f).expandY();
+        targetDat.top();
+        targetDat.add(new Label("", Assets.skin.get("white_14", Label.LabelStyle.class)))
+                .pad(3).size(scrw / 5, 15);
+        targetDat.row();
         ResBar tbar=new ResBar(Assets.skin.getDrawable("borderbar"), Assets.skin.getDrawable("redbar"));
-        targetDat.add(tbar).pad(3).size(scrw * .25f, 15);
-        hud.add(targetDat).expandX().top();
+        targetDat.add(tbar).pad(3).size(scrw / 5, 15); //.center();
 
-            //right buttons
+         //right buttons
         Table rbut= new Table();
+        hud.add(rbut).top().right().width(scrw* .1f);
+        rbut.defaults().height(30).width(60).right();
         TextButton quit= new TextButton("Quit", Assets.skin),  inve= new TextButton("Inv", Assets.skin),
                     ch= new TextButton("Char", Assets.skin);
-        rbut.defaults().width(60).height(30);
+        rbut.top().right();
         rbut.add(quit);  rbut.row(); rbut.add(inve);  rbut.row();  rbut.add(ch);
         quit.addListener(new ChangeListener() {
             @Override
@@ -200,7 +221,8 @@ public class UI  extends Stage {
                 else showInv();
             }
         });
-        hud.add(rbut).top().right();
+
+            //actionbar
 
     }
 
@@ -277,11 +299,16 @@ public class UI  extends Stage {
 
     @Override
     public void act(float delta) {
-        ResBar tbar = (ResBar) targetDat.getChildren().get(0);
-        if (contr.level.erou.target!=null)
+        Label n= (Label) targetDat.getChildren().get(0);
+        ResBar tbar = (ResBar) targetDat.getChildren().get(1);
+        if (contr.level.erou.target!=null){
             tbar.cre= contr.level.erou.target;
-        else
+            n.setText(contr.level.erou.target.name);
+        }
+        else{
             tbar.cre=null;
+            n.setText("");
+        }
         super.act(delta);
     }
 

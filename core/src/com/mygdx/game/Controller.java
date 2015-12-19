@@ -1,11 +1,16 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.content.Level;
 import com.mygdx.game.content.creatures.Creatura;
 import com.mygdx.game.content.creatures.Erou;
@@ -17,17 +22,25 @@ import com.mygdx.game.utils.Constants;
 import com.mygdx.game.utils.MapUtils;
 import com.mygdx.game.utils.extdata.GameData;
 
+import static com.mygdx.game.content.Level.CellFlag.MONST;
+import static com.mygdx.game.content.Level.CellFlag.NPC;
 import static com.mygdx.game.content.Level.CellFlag.TRIGGER;
+import static com.mygdx.game.utils.Constants.VIEW_H;
+import static com.mygdx.game.utils.Constants.VIEW_W;
 
 public class Controller extends InputAdapter implements Disposable {
     public final Joc joc;
 
     public TiledMap tiledmap;
     public float world_w,world_h, tile_w, tile_h;
+
+    public OrthographicCamera cam;
+    public FitViewport viewcam;
+
     public CamUtil camUtil;
     public Level level;
 
-    private boolean gameOver;
+//    private boolean gameOver;
 
     public Controller(Joc joc) {
         this.joc = joc;
@@ -35,6 +48,9 @@ public class Controller extends InputAdapter implements Disposable {
     }
 
     public void init() {
+        cam=new OrthographicCamera();
+        viewcam = new FitViewport( VIEW_W, VIEW_H, cam);
+
         camUtil=new CamUtil();
 
         Erou erou= new Erou();
@@ -64,13 +80,16 @@ public class Controller extends InputAdapter implements Disposable {
     }
 
     public void update(float delta) {
-        if (!gameOver) {
-//            handleInput();  //event
+
+        if (!level.erou.dead) {
+
             level.update(delta);
 
             camUtil.lerpToTarget(new Vector2(level.erou.poz.x + .5f, level.erou.poz.y + .5f));
             camUtil.bound(Constants.VIEW_W / 2, Constants.VIEW_H / 2,
                     world_w - Constants.VIEW_W / 2, world_h - Constants.VIEW_H / 2);
+        } else{
+            joc.setScreen(joc.menu);
         }
     }
 
@@ -132,15 +151,89 @@ public class Controller extends InputAdapter implements Disposable {
         return true;
     }
 
+
+
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        Vector3 fpo= cam.unproject(new Vector3(screenX, screenY,0));
+        int tx= (int) fpo.x, ty= (int) fpo.y;
+//        Gdx.app.log("touchx touchy",tx+";"+ty);   //debug
+
+        //check for target
+        if (level.cells[tx][ty].contains(MONST) || level.cells[tx][ty].contains(NPC)) {
+            level.erou.target = level.getCreaturAt(tx, ty);
+            return true;
+        }
+
+        //walk
+        float dx= fpo.x - level.erou.poz.x,  dy= fpo.y-level.erou.poz.y;
+        if (dx<0) dx=-1;
+        else if (dx<1) dx=0;
+        else dx=1;
+        if (dy<0) dy=-1;
+        else if (dy<1) dy=0;
+        else dy=1;
+
+        if (dx==-1){
+            switch ((int)dy){
+                case -1:
+                    level.erou.walkDir= Creatura.Dir.SW;
+                    level.erou.act= new ErouAction.Walk(level.erou);
+                    break;
+                case 0:
+                    level.erou.walkDir= Creatura.Dir.W;
+                    level.erou.act= new ErouAction.Walk(level.erou);
+                    break;
+                case 1:
+                    level.erou.walkDir= Creatura.Dir.NW;
+                    level.erou.act= new ErouAction.Walk(level.erou);
+                    break;
+            }
+        } else if (dx==0){
+            switch ((int)dy){
+                case -1:
+                    level.erou.walkDir= Creatura.Dir.S;
+                    level.erou.act= new ErouAction.Walk(level.erou);
+                    break;
+                case 0:
+                    level.erou.walkDir= Creatura.Dir.STAY;
+                    level.erou.act= new GenAction.Rest(level.erou);
+                    break;
+                case 1:
+                    level.erou.walkDir= Creatura.Dir.N;
+                    level.erou.act=  new ErouAction.Walk(level.erou);
+                    break;
+            }
+        } else { //dx==1
+            switch ((int)dy){
+                case -1:
+                    level.erou.walkDir= Creatura.Dir.SE;
+                    level.erou.act= new ErouAction.Walk(level.erou);
+                    break;
+                case 0:
+                    level.erou.walkDir= Creatura.Dir.E;
+                    level.erou.act= new ErouAction.Walk(level.erou);
+                    break;
+                case 1:
+                    level.erou.walkDir= Creatura.Dir.NE;
+                    level.erou.act= new ErouAction.Walk(level.erou);
+                    break;
+            }
+        }
+        return true;
+    }
+
+
+
     @Override
     public boolean scrolled(int amount) {
         camUtil.zoom(amount);
         camUtil.bound(Constants.VIEW_W / 2, Constants.VIEW_H / 2,
                 world_w - Constants.VIEW_W / 2, world_h - Constants.VIEW_H / 2);
+        camUtil.setCamTo(cam);
         return true;
     }
-
-
 
     @Override
     public void dispose() {
@@ -149,4 +242,70 @@ public class Controller extends InputAdapter implements Disposable {
     }
 }
 
+/* void touchAt(int x, int y){
+        Vector3 fpo= cam.unproject(new Vector3(x, y,0));
+        int tx= (int) fpo.x, ty= (int) fpo.y;
+//        Gdx.app.log("touchx touchy",tx+";"+ty);   //debug
 
+        //check for target
+        if (level.cells[tx][ty].contains(MONST) || level.cells[tx][ty].contains(NPC)) {
+            level.erou.target = level.getCreaturAt(tx, ty);
+            return;
+        }
+
+        //walk
+        float dx= fpo.x - level.erou.poz.x,  dy= fpo.y-level.erou.poz.y;
+        if (dx<0) dx=-1;
+        else if (dx<1) dx=0;
+        else dx=1;
+        if (dy<0) dy=-1;
+        else if (dy<1) dy=0;
+        else dy=1;
+
+        if (dx==-1){
+            switch ((int)dy){
+                case -1:
+                    level.erou.walkDir= Creatura.Dir.SW;
+                    level.erou.act= new ErouAction.Walk(level.erou);
+                    break;
+                case 0:
+                    level.erou.walkDir= Creatura.Dir.W;
+                    level.erou.act= new ErouAction.Walk(level.erou);
+                    break;
+                case 1:
+                    level.erou.walkDir= Creatura.Dir.NW;
+                    level.erou.act= new ErouAction.Walk(level.erou);
+                    break;
+            }
+        } else if (dx==0){
+            switch ((int)dy){
+                case -1:
+                    level.erou.walkDir= Creatura.Dir.S;
+                    level.erou.act= new ErouAction.Walk(level.erou);
+                    break;
+                case 0:
+                    level.erou.walkDir= Creatura.Dir.STAY;
+                    level.erou.act= new GenAction.Rest(level.erou);
+                    break;
+                case 1:
+                    level.erou.walkDir= Creatura.Dir.N;
+                    level.erou.act=  new ErouAction.Walk(level.erou);
+                    break;
+            }
+        } else { //dx==1
+            switch ((int)dy){
+                case -1:
+                    level.erou.walkDir= Creatura.Dir.SE;
+                    level.erou.act= new ErouAction.Walk(level.erou);
+                    break;
+                case 0:
+                    level.erou.walkDir= Creatura.Dir.E;
+                    level.erou.act= new ErouAction.Walk(level.erou);
+                    break;
+                case 1:
+                    level.erou.walkDir= Creatura.Dir.NE;
+                    level.erou.act= new ErouAction.Walk(level.erou);
+                    break;
+            }
+        }
+    }*/

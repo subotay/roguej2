@@ -50,7 +50,7 @@ public abstract class ErouAction implements Action {
 
             if (cell.contains(BLOC_MV))
                 if (cell.contains(DOOR)) {
-                    actor.interractDoor(npos[0], npos[1]);
+                    actor.interractDoor(npos[0], npos[1]);  //contine walk
                     return ;
                 } else return ;  //walks in walls
 
