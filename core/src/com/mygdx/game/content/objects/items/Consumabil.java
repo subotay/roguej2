@@ -11,4 +11,9 @@ public class Consumabil extends Item {
 
 
     public Consumabil() { }
+
+    @Override
+    public String longDesc() {
+        return super.longDesc();
+    }
 }

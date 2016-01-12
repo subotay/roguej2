@@ -1,12 +1,18 @@
 package com.mygdx.game.content.creatures;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.content.Level;
 import com.mygdx.game.content.objects.Door;
+import com.mygdx.game.content.objects.items.Echipabil;
 import com.mygdx.game.content.objects.items.Item;
 import com.mygdx.game.content.objects.items.ItemContainer;
 import com.mygdx.game.content.objects.items.Weapon;
+import com.mygdx.game.ui.EqpTable;
 import com.mygdx.game.utils.Assets;
+
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import static com.mygdx.game.content.objects.items.Item.ItemTip.*;
@@ -17,10 +23,10 @@ public class Erou extends Creatura {
     public int lvl, xp;
     public static final int BRAZA = 6;
 
-    public boolean dead;
-
     public int vraza;
     public  String levelName;
+
+    public Creatura lastHitter;
 
     public ItemContainer inv;
     //*****************************************************
@@ -34,40 +40,21 @@ public class Erou extends Creatura {
         RHAND(WEAPON),
         LHAND(WEAPON, TOOL, SHIELD); //+EMPTY
 
+
         public final EnumSet<Item.ItemTip> accepted;
-        private Item equiped;
 
         private  EqpSlot(Item.ItemTip... accepted){
             this.accepted = EnumSet.noneOf(Item.ItemTip.class);
-            for (Item.ItemTip tip: accepted)
-                this.accepted.add(tip);
-        }
-
-        public Item getEquiped() { return equiped; }
-
-        /** if new valid(or null) - swap old with new, returns the old equiped, or null (if old==null )
-         *  if new invalid - keep old, return null*/
-        public Item setEquiped(Item newItem) {
-            if (newItem==null){
-                Item oldItem= equiped;
-                equiped= null;
-                return oldItem;
-            }
-            if ( accepted.contains(newItem.tip)) {
-                Item oldItem= equiped;
-                equiped= newItem;
-                return oldItem;
-            }
-            return null;
+            Collections.addAll(this.accepted, accepted);
         }
     }
-
-    public EnumMap<EqpSlot, Item> eqp;
+    public EnumMap<EqpSlot, Echipabil> eqp;
+    public EqpTable eqpView;
     //***************************************************
 
     public Erou() {
         stts=new EnumMap<Stat, Integer>(Stat.class);
-        eqp = new EnumMap<EqpSlot, Item>(EqpSlot.class);
+        eqp = new EnumMap<EqpSlot, Echipabil>(EqpSlot.class);
         inv = new ItemContainer();
         Assets.loadSprite(Assets.EROU);
         this.sprite= Assets.getSprite(Assets.EROU);;
@@ -80,11 +67,18 @@ public class Erou extends Creatura {
     @Override
     public int dmg() {
         Weapon wep= (Weapon) eqp.get(EqpSlot.RHAND);
-        return stts.get(Stat.BONDMG)+ (wep!=null ? wep.dmg: 0);
+        return
+                (wep==null|| wep.melee ? 2*STR: 2*AGI)  //stat bonus (melee/ranged) in fct de wep equiped
+                +stts.get(Stat.BONDMG );                //include bonus dat de wep dmg pt equiped wep.
     }
 
         @Override
-    public void updateAI(float delta) { }
+    public void updateAI(float delta) {
+        if (target!=null && target.dead)
+            target=null;
+        if (lastHitter!=null  && lastHitter.dead)
+            lastHitter=null;
+    }
 
     @Override
     public void render(float delta, SpriteBatch batch) {
@@ -95,7 +89,7 @@ public class Erou extends Creatura {
     //TODO interactiuni
     @Override
     public void interractTrap(float x, float y) {
-        super.interractTrap(x,y);
+        super.interractTrap(x, y);
     }
 
     public boolean interractTrigger(float x, float y) {
@@ -112,34 +106,53 @@ public class Erou extends Creatura {
         poz.set(tx,ty);
     }
 
-    public void interractLoot(float x, float y) {}
-
-
     /**   fac swap, pt talk alta action( press e key ex.)*/
-    public void interactNPC(Npc npc) {
+    public void swapNPC(Npc npc) {
         npc.path=null;
         level.cells[((int) npc.poz.x)][((int) npc.poz.y)].remove(NPC);
         level.cells[((int) poz.x)][((int) poz.y)].add(NPC);
         npc.poz.set(poz);
-    }
-
-    @Override
-    public void atkMelee(Creatura target) {
-        super.atkMelee(target);
-        this.target= target;
-    }
-
-    @Override
-    public void atKRange(Creatura target) {
-        super.atKRange(target);
-        this.target= target;
+        npc.updateSprite(Gdx.graphics.getDeltaTime());
     }
 
     @Override
     public void onHitBy(Creatura hitter) {
-//        super.onHitBy(hitter); //dont change target on hit
+        lastHitter= hitter;
     }
 
+    public void setTarget(Creatura cr){
+        cr.sprite.setColor(Color.GOLD);
+        target= cr;
+    }
+
+    public void removeTarget(){
+        if (target!=null){
+            target.sprite.setColor(Color.WHITE);
+            target= null;
+        }
+    }
+
+    /** returns null if slot was empty, the old item otherwise*/
+    public Echipabil unEquip( EqpSlot eqslot) {
+        Echipabil it= eqp.get(eqslot);
+        if (it!=null) {
+            for (Stat stat: Stat.values()){
+                stts.put(stat, stts.get(stat)- it.mods.get(stat)); }
+            if (hp>mhp()) hp=mhp();
+            if (stam>mstam()) stam=mstam();
+            eqp.put(eqslot,null);
+        }
+        return it;
+    }
+
+    /** verif valid prior */
+    public void equip(Echipabil it, EqpSlot slot){
+        if (it!=null){
+            for (Stat stat: Stat.values()){
+                stts.put(stat, stts.get(stat) + it.mods.get(stat)); }
+        }
+        eqp.put(slot, it);
+    }
 
     @Override
     public boolean invalid(int x, int y) {

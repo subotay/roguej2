@@ -156,13 +156,17 @@ public class Controller extends InputAdapter implements Disposable {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (button== Input.Buttons.RIGHT) {
+            level.erou.removeTarget();
+            return true;
+        }
         Vector3 fpo= cam.unproject(new Vector3(screenX, screenY,0));
         int tx= (int) fpo.x, ty= (int) fpo.y;
-//        Gdx.app.log("touchx touchy",tx+";"+ty);   //debug
 
         //check for target
         if (level.cells[tx][ty].contains(MONST) || level.cells[tx][ty].contains(NPC)) {
-            level.erou.target = level.getCreaturAt(tx, ty);
+            level.erou.removeTarget();
+            level.erou.setTarget( level.getCreaturAt(tx, ty));
             return true;
         }
 
@@ -224,23 +228,24 @@ public class Controller extends InputAdapter implements Disposable {
         return true;
     }
 
-
-
-    @Override
-    public boolean scrolled(int amount) {
-        camUtil.zoom(amount);
-        camUtil.bound(Constants.VIEW_W / 2, Constants.VIEW_H / 2,
-                world_w - Constants.VIEW_W / 2, world_h - Constants.VIEW_H / 2);
-        camUtil.setCamTo(cam);
-        return true;
-    }
-
     @Override
     public void dispose() {
         level.dispose();
         tiledmap.dispose();
     }
 }
+
+
+
+   /* @Override
+    public boolean scrolled(int amount) {
+        camUtil.zoom(amount);
+        camUtil.bound(Constants.VIEW_W / 2, Constants.VIEW_H / 2,
+                world_w - Constants.VIEW_W / 2, world_h - Constants.VIEW_H / 2);
+        camUtil.setCamTo(cam);
+        return true;
+    }*/
+
 
 /* void touchAt(int x, int y){
         Vector3 fpo= cam.unproject(new Vector3(x, y,0));

@@ -23,6 +23,7 @@ public class ItemDesc {
         it.tip= Enum.valueOf(Item.ItemTip.class, tip);
     }
 
+
 }
 
    /* public void from(Item it){

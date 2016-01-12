@@ -15,6 +15,8 @@ public class Badguy extends Creatura{
 
     @Override
     public void updateAI(float delta) {
+       /* if (target!=null && target.dead)
+            target=null;*/
 
 //        System.out.println("            //update    target"+ (target!=null?target.poz:"none"));     //debug
 
@@ -22,14 +24,14 @@ public class Badguy extends Creatura{
                 && Pathfind.cebdist((int) poz.x, (int)poz.y, (int)level.erou.poz.x, (int)level.erou.poz.y)<=aggrorad )
             target= level.erou;
 
-        if (target!=null) {
+        if (target!=null && !target.dead) {
             if (!melee) {
                 if (Fov.lineOS(level, (int)poz.x, (int)poz.y, (int)target.poz.x, (int)target.poz.y)){
-                    act=new GenAction.AtkRange(this);
+                    act=new GenAction.AtkRange(this, target, atkcost);
                     path= null;
                 }else {
                     findpath(target);
-                    if (path.size() > 0) {
+                    if (path.size() > 1) {
 //                        System.out.println(">>>>> path init,step " + step);   //debug
                         Pathfind.Node nxt = path.get(step);
                         act= new GenAction.WalkAt(this, nxt.x, nxt.y);
@@ -42,7 +44,7 @@ public class Badguy extends Creatura{
             else {  // melee
                 if (path == null) {
                     findpath(target);
-                    if (path.size() > 0) {
+                    if (path.size() > 1) {
 //                        System.out.println(">>>>> path init,step " + step);   //debug
                         Pathfind.Node nxt = path.get(step);
                         act= new GenAction.WalkAt(this, nxt.x, nxt.y);
@@ -57,7 +59,7 @@ public class Badguy extends Creatura{
                         findpath(target);
                     }
 
-                    if (path.size() > 0) {
+                    if (path.size() > 1) {
 //                        System.out.println("path advanc, step " + step);   //debug
                         Pathfind.Node nxt = path.get(step);
                         act= new GenAction.WalkAt(this, nxt.x, nxt.y);
@@ -74,6 +76,7 @@ public class Badguy extends Creatura{
         }
         //no target
         else {
+            target=null;
             path= null;
             act= new GenAction.Rest(this);
         }

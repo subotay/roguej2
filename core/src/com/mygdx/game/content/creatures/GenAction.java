@@ -1,8 +1,11 @@
 package com.mygdx.game.content.creatures;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.content.Level;
+import com.mygdx.game.utils.Assets;
 
 import java.util.EnumSet;
 
@@ -20,7 +23,7 @@ public abstract class GenAction implements Action{
         this.actor= actor;
         this.cost= cost;
     }
-    public abstract void executa();
+    public abstract boolean executa();
 
     @Override
     public int cost() {
@@ -28,8 +31,7 @@ public abstract class GenAction implements Action{
     }
 
 
-    // --------------  generice --------------------
-
+    // *******************************  generice ********************************************************
     /** walk **/
     public static class WalkAt extends GenAction {
         private float x,y;
@@ -46,7 +48,7 @@ public abstract class GenAction implements Action{
         }
 
         @Override
-        public void executa() {
+        public boolean executa() {
             float nx=actor.poz.x+ MathUtils.clamp(x -actor.poz.x,-1,1),
                     ny= actor.poz.y+ MathUtils.clamp(y -actor.poz.y, -1,1);
 //            System.out.println("act walking: opos:"+actor.poz+" npos:"+new Vector2(nx,ny)+" fpos:"+new Vector2(x,y));        //debug
@@ -57,101 +59,136 @@ public abstract class GenAction implements Action{
 
             if (actor instanceof Badguy) {
                 if (cell.contains(HERO)){
-                    actor.atkMelee(actor.level.erou);
-                    return;
+                    actor.act= new AtkMelee(actor, actor.level.erou, actor.atkcost);
+                    return false;
                 }
                 if ( cell.contains(NPC)) {
                     actor.path= null;
-                    actor.target= actor.level.getCreaturAt(nx,ny);
-                    actor.atkMelee(actor.target);
-                    return ;
+                    Creatura target=  actor.level.getCreaturAt(nx,ny);
+                    actor.target= target;
+                    actor.act= new  AtkMelee(actor, target, actor.atkcost);
+                    return false;
                 }
                 if (cell.contains(MONST)) {
                     actor.path=null;
-                    return ;
+                    return true; //same as walking in wall
                 }
+
                 if (cell.contains(TRAP))
                         actor.interractTrap(nx, ny);
-
                 //muta monstru+ update cells
                 actor.level.cells[(int) actor.poz.x][(int) actor.poz.y].remove(MONST);
                 actor.poz.x = nx;
                 actor.poz.y = ny;
                 cell.add(MONST);
 
-                return ;
+                return true;
             }
 
             if (actor instanceof Npc) {
                     if (cell.contains(MONST)) {
                         actor.path= null;
-                        actor.target= actor.level.getCreaturAt(nx,ny);
-                        actor.atkMelee(actor.target);
-                        return ;
+                        Creatura target=  actor.level.getCreaturAt(nx,ny);
+                        actor.target= target;
+                        actor.act= new  AtkMelee(actor, target, actor.atkcost);
+                        return false;
                     }
                     if (cell.contains(NPC) || cell.contains(HERO)) {
                         actor.path= null;
-                        return ;
+                        return true;
                     }
+
                     if (cell.contains(TRAP))
                             actor.interractTrap(nx, ny);
-
                     //muta npc+ update cells
                     actor.level.cells[(int) actor.poz.x][(int) actor.poz.y].remove(NPC);
                     actor.poz.x = nx;
                     actor.poz.y = ny;
                     cell.add(NPC);
                 }
+            return true;
         }
     }
 
-
-
-    /**  deocamdata face acelasi lucru ca si update end turn*/
-    public static class Rest extends GenAction {
-        public Rest(Creatura actor) {super(actor);}
-
-        public Rest(Creatura actor, int cost) {
+    //****************************************************************************************************
+    public static class AtkMelee extends GenAction {
+        Creatura target;
+        public AtkMelee(Creatura actor, Creatura target, int cost) {
             super(actor, cost);
+            this.target= target;
         }
 
         @Override
-        public void executa() {
+        public boolean executa() {
+            Assets.man.get(Assets.S_MHIT, Sound.class).play();
+            target.onHitBy(actor);
+            int efdmg= MathUtils.clamp(actor.dmg()- target.stts.get(Creatura.Stat.ARMOR),0,10000);
+            Gdx.app.log("dmg done", efdmg+"");
+            target.hp-= efdmg;
+            if (target.hp<0) {
+                target.hp=0;
+                target.dead= true;
+            }
+            //TODO attack
+            return true;
+        }
+    }
+
+    //***************************************************************************************************
+    public static class AtkRange extends GenAction {
+        Creatura target;
+        public AtkRange(Creatura actor, Creatura target, int cost) {
+            super(actor, cost);
+            this.target= target;
+        }
+
+       @Override
+       public boolean executa() {
+            Assets.man.get(Assets.S_RHIT, Sound.class).play();
+            target.onHitBy(actor);
+            target.hp-= (MathUtils.clamp(actor.dmg()- target.stts.get(Creatura.Stat.ARMOR),0,10000));
+            if (target.hp<0){
+                target.hp=0;
+                target.dead= true;
+            }
+            //TODO attack
+            return true;
+       }
+    }
+
+    //***************************************************************************************************
+    /**  deocamdata face acelasi lucru ca si update end turn*/
+    public static class Rest extends GenAction {
+        public Rest(Creatura actor) {
+            super(actor);
+        }
+
+        @Override
+        public boolean executa() {
             if (actor.hp < actor.mhp()) {
                 actor.accHp+= actor.hpreg();
+                System.out.println("hp:"+actor.hp+", acchp:"+actor.accHp);
                 actor.hp+= Math.floor(actor.accHp);
                 actor.accHp-=Math.floor(actor.accHp);
                 if (actor.hp>=actor.mhp()){
                     actor.hp=actor.mhp();
                     actor.accHp=0;
                 }
+                System.out.println("hp:"+actor.hp+", acchp:"+actor.accHp);
+
             }
-            if (actor.stam >= actor.mstam()) {
+            if (actor.stam < actor.mstam()) {
                 actor.accStam+= actor.stareg();
+                System.out.println("st:"+actor.stam+", accst:"+actor.accStam);
                 actor.stam+= Math.floor(actor.accStam);
                 actor.accStam-= Math.floor(actor.accStam);
                 if (actor.stam>=actor.mstam()){
                     actor.stam=actor.mstam();
                     actor.accStam=0;
                 }
+                System.out.println("st:"+actor.stam+", accst:"+actor.accStam);
             }
+            return true;
         }
     }
-
-    public static class AtkRange extends GenAction {
-        public AtkRange(Creatura actor) {super(actor);}
-
-        public AtkRange(Creatura actor, int cost) {
-            super(actor, cost);
-        }
-
-        @Override
-        public void executa() {
-            if (actor.target != null) {
-//                System.out.println("     act: range attack on"+ actor.target.poz);      //debug
-                actor.atKRange(actor.target);
-            }
-        }
-    }
-
 }

@@ -1,5 +1,6 @@
 package com.mygdx.game.content.creatures;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.content.Level;
 import com.mygdx.game.utils.Fov;
@@ -15,22 +16,21 @@ public class Npc extends Creatura {
 
     @Override
     public void updateAI(float delta) {
-
+       /* if (target!=null && target.dead)   target=null;*/
 //        System.out.println("  //update    target" + (target != null ? target.poz : "none"));     //debug
 
-        if (level.fov[(int)poz.x][(int)poz.y] && level.erou.target!=null
-                &&(Pathfind.cebdist((int) poz.x, (int) poz.y,
-                                    (int) level.erou.target.poz.x, (int) level.erou.target.poz.y) <= aggrorad))
-            target= level.erou.target;
+        if (target==null    &&   level.fov[(int)poz.x][(int)poz.y]   &&    level.erou.lastHitter!=null
+                &&(Pathfind.cebdist((int) poz.x, (int) poz.y,(int) level.erou.lastHitter.poz.x, (int) level.erou.lastHitter.poz.y) <= aggrorad))
+            target= level.erou.lastHitter;
 
-        if (target!=null ){
+        if (target!=null && !target.dead ){
             if (!melee) {
                 if (Fov.lineOS(level, (int) poz.x, (int) poz.y, (int) target.poz.x, (int) target.poz.y)){
-                    act=new GenAction.AtkRange(this);
+                    act=new GenAction.AtkRange(this, target, atkcost);
                     path= null;
                 }else {
                     findpath(target);
-                    if (path.size() > 0) {
+                    if (path.size() > 1) {
 //                        System.out.println("        >>>>> path init,step " + step);   //debug
                         Pathfind.Node nxt = path.get(step);
                         act= new GenAction.WalkAt(this, nxt.x, nxt.y);
@@ -43,7 +43,7 @@ public class Npc extends Creatura {
             else {  // melee
                 if (path == null) {
                     findpath(target);
-                    if (path.size() > 0) {
+                    if (path.size() > 1) {
 //                        System.out.println("        >>>>> path init,step " + step);   //debug
                         Pathfind.Node nxt = path.get(step);
                         act= new GenAction.WalkAt(this, nxt.x, nxt.y);
@@ -58,7 +58,7 @@ public class Npc extends Creatura {
                         findpath(target);
                     }
 
-                    if (path.size() > 0) {
+                    if (path.size() > 1) {
 //                        System.out.println("path advanc, step " + step);   //debug
                         Pathfind.Node nxt = path.get(step);
                         act= new GenAction.WalkAt(this, nxt.x, nxt.y);
@@ -73,11 +73,15 @@ public class Npc extends Creatura {
                 target = null;   //act == walk|| rest || etc ^
             }
         }
-        else {   //no target
-            step=1;
+        else {   //no target or dead
+            target=null;
             if (!poz.equals(home)){
-                path= (path==null ? Pathfind.pathJPS(this,(int) home.x, (int) home.y):null);
-                if (path!=null && path.size() > 0) {
+                if (path==null){
+                    step=1;
+                    path= Pathfind.pathJPS(this,(int) home.x, (int) home.y);
+                }
+                Gdx.app.log("",path.toString());
+                if (path!=null && path.size() > 1) {
                     Pathfind.Node nxt = path.get(step);
                     act= new GenAction.WalkAt(this, nxt.x, nxt.y);
                 } else {

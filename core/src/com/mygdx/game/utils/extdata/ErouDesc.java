@@ -56,7 +56,8 @@ public class ErouDesc {
             inv.put(it.id, er.inv.items.get(it) );
 
         for (Erou.EqpSlot slot : er.eqp.keySet())
-            eqp.put(slot.name(), er.eqp.get(slot).id);
+            if (er.eqp.get(slot)!=null)
+                eqp.put(slot.name(), er.eqp.get(slot).id);
     }
 
     //*************************************************
@@ -126,7 +127,7 @@ public class ErouDesc {
         //eqp
         String id;
         for (String slot:eqp.keys()){  //eqp==map <eqp slot, item id>
-            Item it= null;
+            Echipabil it= null;
             id= eqp.get(slot);
             String itd=null;
 
@@ -141,20 +142,12 @@ public class ErouDesc {
                     itd= equips.get(id).toString();
                     desc= json.fromJson(EchipDesc.class, itd.substring(itd.indexOf("{")));
                     break;
-                case 'c':
-                    it= new Consumabil();
-                    itd= cons.get(id).toString();
-                    desc= json.fromJson(ConsDesc.class, itd.substring(itd.indexOf("{")));
-                    break;
-                case 'm':
-                    it= new Misc();
-                    itd= miscs.get(id).toString();
-                    desc= json.fromJson(ItemDesc.class, itd.substring(itd.indexOf("{")));
-                    break;
+                //only equips
             }
             desc.to(it);
-
+            it.id= id;
             er.eqp.put(Enum.valueOf(Erou.EqpSlot.class, slot), it);
+//            Gdx.app.log("eqp slot",">"+it.id);
         }
 
     }

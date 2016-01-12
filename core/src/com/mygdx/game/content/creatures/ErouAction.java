@@ -2,6 +2,7 @@ package com.mygdx.game.content.creatures;
 
 import com.badlogic.gdx.audio.Sound;
 import com.mygdx.game.content.Level;
+import com.mygdx.game.content.objects.items.Weapon;
 import com.mygdx.game.utils.Assets;
 
 import java.util.EnumSet;
@@ -21,14 +22,14 @@ public abstract class ErouAction implements Action {
         this.cost= cost;
     }
 
-    public abstract void executa() ;
+    public abstract boolean executa() ;
 
     @Override
     public int cost() {
         return cost;
     }
 
-    //--------------------------------------------------------------
+    //********************************************************************************
     public static  class Walk extends ErouAction{
         public Walk(Erou erou) {
             super(erou);
@@ -39,75 +40,45 @@ public abstract class ErouAction implements Action {
         }
 
         @Override
-        public void executa() {
+        public boolean executa() {
             float[] npos= actor.getNextPos(1);
             // out of map
             if (npos[0]<0 || npos[0]>= actor
                     .level.worldw || npos[1]<0 || npos[1]>= actor.level.worldh )
-                return ;
+                return true;
 
             EnumSet<Level.CellFlag> cell= actor.level.cells[(int)npos[0]][((int) npos[1])];
 
-            if (cell.contains(BLOC_MV))
-                if (cell.contains(DOOR)) {
+            if (cell.contains(BLOC_MV)) {
+                if (cell.contains(DOOR))
                     actor.interractDoor(npos[0], npos[1]);  //contine walk
-                    return ;
-                } else return ;  //walks in walls
+                return true;  //walks in walls
+            }
 
             if (cell.contains(MONST)){
                 Creatura target= actor.level.getCreaturAt(npos[0],npos[1]);
-                actor.atkMelee(target);
-                return ;
+//                actor.target= target;
+                actor.removeTarget();
+                actor.setTarget(target);
+                actor.act=new GenAction.AtkMelee(actor,target, ((Weapon)actor.eqp.get(Erou.EqpSlot.RHAND)).atkcost);
+                return false;
             }
 
-            if (cell.contains(NPC)){
-                actor.interactNPC((Npc)actor.level.getCreaturAt(npos[0],npos[1]));
-//                return ;
-            }
-
-
-            if (cell.contains(TRAP)) {
+            if (cell.contains(NPC))
+                actor.swapNPC((Npc) actor.level.getCreaturAt(npos[0], npos[1]));  //contine swap doar pt npc
+            if (cell.contains(TRAP))
                 actor.interractTrap(npos[0], npos[1]);
-            }
 
               //nimic nu bloc.
             actor.level.cells[(int) actor.poz.x][(int) actor.poz.y].remove(HERO);
             actor.poz.x = npos[0];
             actor.poz.y = npos[1];
             cell.add(HERO);
-        }
-
-
-}
-
-    /** interact loot*/
-    public static class InteractLoot extends ErouAction{
-        private float x,y;
-
-        public InteractLoot(Erou erou, float x, float y) {
-            super(erou);
-            this.x= x;
-            this.y=y ;
-        }
-
-        public InteractLoot(Erou actor, int cost, float x, float y) {
-            super(actor, cost);
-            this.x = x;
-            this.y = y;
-        }
-
-        @Override
-        public void executa(){
-            //get loot at  xy
-            Assets.man.get(Assets.S_LOOT, Sound.class).play();
-            //TODO loot window
+            return true;
         }
     }
+
 }
-
-
-
-
 
    /* *//**  interact NPC*//*
     public  static class InteractNPC extends ErouAction{
@@ -123,31 +94,5 @@ public abstract class ErouAction implements Action {
         }
 
     }
-    *//**  swap position ex: friendly, non-interact. guard*//*
-    public static class Swap extends ErouAction{
-        private Npc target;
 
-        public Swap(Erou actor, Npc target) {
-            super(actor);
-            this.target= target;
-        }
-        @Override
-        public boolean executa() {
-            return true;
-        }
-
-    }
-    *//** interact door*//*
-    public static class InteractDoor extends  ErouAction{
-        private Door targ;
-
-        public InteractDoor(Erou actor, Door target) {
-            super(actor);
-            targ= target;
-        }
-        @Override public boolean executa() {
-
-            return true;
-        }
-
-    }*/
+    */

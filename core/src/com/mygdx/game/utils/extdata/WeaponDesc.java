@@ -5,7 +5,7 @@ import com.mygdx.game.content.objects.items.Weapon;
 
 public class WeaponDesc extends EchipDesc {
     //************
-    int dmg;
+//    int dmg; // inclus in mods
     boolean melee, onehand;
     int atkcost;
     //*******************
@@ -17,9 +17,9 @@ public class WeaponDesc extends EchipDesc {
         super.to(it);
 
         Weapon wit= (Weapon) it;
-        wit.dmg= dmg;
+//        wit.dmg= dmg;
         wit.melee= melee;
-        wit.onehand= onehand;
+        wit.onehanded = onehand;
         wit.atkcost =atkcost;
     }
 }

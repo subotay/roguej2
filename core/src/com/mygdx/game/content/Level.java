@@ -84,14 +84,16 @@ public class Level implements Disposable {
 
         erou.energ+= TICKS*(erou.slowed? .5f: 1)*(erou.hasted? 2:1);
         if (erou.act.cost() <= erou.energ) {
-            erou.act.executa();
+            boolean done= erou.act.executa();
+            while (!done )
+                done= erou.act.executa();
             erou.energ-= erou.act.cost();
-            Gdx.app.log("  act executed cost", erou.act.cost()+"");
+//            Gdx.app.log("  act executed cost", erou.act.cost()+"");
             erou.act= null;
             erou.updateSprite(delta);  //update sprite
             updateFov();
         }
-        erou.updateAI(delta);//   deocamdata nu face nimic TODO?
+        erou.updateAI(delta);
 
         if (turn==0){
             erou.update(delta);
@@ -104,6 +106,7 @@ public class Level implements Disposable {
             Gdx.app.log("creatura ", creatura.name +creatura.poz+ " act" + (creatura.act == null ? "null" : creatura.act.getClass().getSimpleName()));
 
             if (creatura.hp<=0) {  //dead
+                creatura.dead= true;
                 cells[((int) creatura.poz.x)][((int) creatura.poz.y)]
                         .remove((creatura instanceof Badguy ? CellFlag.MONST : CellFlag.NPC));
                 actori.removeValue(creatura, true);
@@ -114,6 +117,9 @@ public class Level implements Disposable {
             creatura.energ += TICKS*(creatura.slowed? .5f: 1)*(creatura.hasted? 2:1);
 
             if (creatura.act.cost() <= creatura.energ) {
+                boolean done= creatura.act.executa();
+                while (!done )
+                    done= creatura.act.executa();
                 creatura.act.executa();
                 creatura.energ -= creatura.act.cost();
                 Gdx.app.log("  act executed cost", creatura.act.cost()+"");
@@ -127,7 +133,6 @@ public class Level implements Disposable {
         }
 
         if (turn==0)       Gdx.app.log("     //endturn", "");
-
     }
 
     private void updateFov() {

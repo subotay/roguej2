@@ -13,14 +13,14 @@ import com.mygdx.game.content.objects.items.*;
 import java.util.Scanner;
 
 public class LevelDesc {
-    public ObjectMap<String, Array<Vector2>> creaturi;    //save actor.id -> home position
+    public ObjectMap<String, Array<String>> creaturi;    //save actor.id -> home position
     public ObjectMap<String, ObjectMap<String,Integer>> containers;  //save container pos -> map of (item.id, item amount)
 
     public LevelDesc(){ }
 
 
     public void to(Level lvl){
-
+        Scanner sc;
         JsonReader reader= new JsonReader();
         JsonValue mobs= reader.parse(Gdx.files.internal("actors/mobs.dat")),
                  npcs= reader.parse(Gdx.files.internal("actors/npcs.dat"));
@@ -36,13 +36,15 @@ public class LevelDesc {
                 String md= mobs.get(id).toString();
                 CreatDesc mobdesc= json.fromJson(CreatDesc.class, md.substring(md.indexOf("{")));
 
-                for (Vector2 pos: creaturi.get(id)){
+                for (String pos: creaturi.get(id)){
+                    sc= new Scanner(pos);
+                    float x=sc.nextFloat(),  y=sc.nextFloat();
                     Badguy mob= new Badguy();
                     mobdesc.to(mob);
                     lvl.actori.add(mob);
                     mob.level= lvl;
                     mob.id=id;
-                    mob.poz.set(pos.x, pos.y);
+                    mob.poz.set(x, y);
                     lvl.cells[(int)mob.poz.x][(int)mob.poz.y].add(Level.CellFlag.MONST);
                     mob.sprite.setBounds(mob.poz.x, mob.poz.y, 1, 1);
                     mob.home= new Vector2(mob.poz);
@@ -52,13 +54,14 @@ public class LevelDesc {
                 String nd= npcs.get(id).toString();
                 CreatDesc npcdesc= json.fromJson(CreatDesc.class, nd.substring(nd.indexOf("{")));
 
-                for (Vector2 pos: creaturi.get(id)){
-                    Npc npc= new Npc();
+                for (String pos: creaturi.get(id)){
+                    sc= new Scanner(pos);
+                    float x=sc.nextFloat(),  y=sc.nextFloat();Npc npc= new Npc();
                     lvl.actori.add(npc);
                     npc.level= lvl;
                     npcdesc.to(npc);
                     npc.id=id;
-                    npc.poz.set(pos.x, pos.y);
+                    npc.poz.set(x, y);
                     lvl.cells[(int)npc.poz.x][(int)npc.poz.y].add(Level.CellFlag.NPC);
                     npc.sprite.setBounds(npc.poz.x, npc.poz.y, 1, 1);
                     npc.home= new Vector2(npc.poz);
@@ -78,7 +81,7 @@ public class LevelDesc {
             ItemContainer container=new ItemContainer();
             container.level= lvl;
             lvl.loots.add(container);
-            Scanner sc=new Scanner(poz);
+            sc=new Scanner(poz);
             container.poz.set(sc.nextFloat(), sc.nextFloat());
             lvl.cells[((int) container.poz.x)][((int) container.poz.y)].add(Level.CellFlag.LOOT);
 
@@ -119,15 +122,15 @@ public class LevelDesc {
 
     //*****************************************************************
     public void from(Level lvl){
-        creaturi= new ObjectMap<String, Array<Vector2>>();
+        creaturi= new ObjectMap<String, Array<String>>();
         containers= new ObjectMap<String, ObjectMap<String, Integer>>();
 
         for (Creatura actor:lvl.actori)
                 if (creaturi.containsKey(actor.id))
-                    creaturi.get(actor.id).add(actor.home);
+                    creaturi.get(actor.id).add(actor.home.x+" "+actor.home.y);
                 else {
-                    Array<Vector2> pozl= new Array<Vector2>();
-                    pozl.add(actor.home);
+                    Array<String> pozl= new Array<String>();
+                    pozl.add(actor.home.x+" "+actor.home.y);
                     creaturi.put(actor.id,pozl);
                 }
 

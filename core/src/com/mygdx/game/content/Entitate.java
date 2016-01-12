@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
 public abstract class Entitate implements Disposable{
-    public transient final  Vector2 poz;
-    public transient Sprite sprite;
+    public final  Vector2 poz;
+    public Sprite sprite;
     public String id;
 
 

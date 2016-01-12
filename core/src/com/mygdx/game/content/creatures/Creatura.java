@@ -1,9 +1,11 @@
 package com.mygdx.game.content.creatures;
 
-
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.mygdx.game.content.Entitate;
 import com.mygdx.game.content.Level;
 import com.mygdx.game.utils.Assets;
@@ -12,19 +14,15 @@ import com.mygdx.game.utils.Pathfind;
 import java.util.EnumMap;
 import java.util.LinkedList;
 
-
 public abstract class Creatura extends Entitate {
 
-
     public enum Stat {
+        ARMOR, BONDMG,
+        HIT, EVA, CRIT,
         MHP,HPREG,
         MSTAM, STAREG,
-        HIT, EVA,
         FATK,FRES,
-        EATK, ERES,
-        CRIT,
-        ARMOR,
-        BONDMG
+        EATK, ERES
     }
     public enum Dir{N,NE,E,SE,S,SW,W,NW,STAY;}
 
@@ -60,6 +58,8 @@ public abstract class Creatura extends Entitate {
     public float energ;
     public int atkcost;
 
+    public boolean dead;
+
     /*------------------------------------------*/
 
     public int mhp(){ return VIT*10+ stts.get(Stat.MHP); }
@@ -77,7 +77,10 @@ public abstract class Creatura extends Entitate {
     public int eatk(){ return SPI-5+ stts.get(Stat.EATK);}
     public int eres() { return END-5+ stts.get(Stat.ERES);}
         //dmg   //+ weapon dmg(erou)
-    public int dmg(){ return  stts.get(Stat.BONDMG ); }
+    public int dmg(){
+        return (melee? 2*STR: 2*AGI)  //stat bonus
+            +stts.get(Stat.BONDMG ); //simuleaza arma
+    }
 /* crit direct  //poate depinde de skill
    armor direct
 */
@@ -157,26 +160,7 @@ public abstract class Creatura extends Entitate {
     /***********************************************************************************/
     /** update end turn*/
     @Override
-    public void update(float delta) {
-        if (hp < mhp()) {
-            accHp+= hpreg();
-            hp+= Math.floor(accHp);
-            accHp-=Math.floor(accHp);
-            if (hp>=mhp()){
-                hp=mhp();
-                accHp=0;
-            }
-        }
-        if (stam >= mstam()) {
-            accStam+= stareg();
-            stam+= Math.floor(accStam);
-            accStam-= Math.floor(accStam);
-            if (stam>=mstam()){
-                stam=mstam();
-                accStam=0;
-            }
-        }
-    }
+    public void update(float delta) { }
 
     /**  after act only */
     public void updateSprite(float delta){
@@ -194,30 +178,14 @@ public abstract class Creatura extends Entitate {
         //TODO trap activation
     }
 
-    public void atkMelee(Creatura target) {
-        Assets.man.get(Assets.S_MHIT, Sound.class).play();
-        target.onHitBy(this);
-        target.hp-= (dmg()- target.stts.get(Stat.ARMOR));
-        if (target.hp<0) target.hp=0;
-        //TODO attack
-    }
-
-    public void atKRange(Creatura target){
-        Assets.man.get(Assets.S_RHIT, Sound.class).play();
-        target.onHitBy(this);
-        target.hp-= (dmg()- target.stts.get(Stat.ARMOR));
-        if (target.hp<0) target.hp=0;
-        //TODO attack
-    }
-
     public void onHitBy(Creatura hitter){
-        target= hitter;
-    };
-
-    public void onDeath(){
-
+        if (target!=null) {
+            if (hitter.dmg()>target.dmg()) target= hitter;
+        } else
+            target= hitter;
     }
 
+    public void onDeath(){ }
 
 //--------------------------------------------
     @Override public String toString() {return "Creatura "+id+" "+poz+" hp:"+hp+"/"+mhp();}

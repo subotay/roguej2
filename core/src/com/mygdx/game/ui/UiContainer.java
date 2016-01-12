@@ -85,11 +85,11 @@ public class UiContainer extends Table {
 
     private void addRow(){
         for (int i = 0; i < cols; i++) {
-            ContainerSlot slot= new ContainerSlot();
+            final ContainerSlot slot= new ContainerSlot();
             add(slot);
             slots.add(slot);
             if (dnd!=null){
-                dnd.addSource(new DragSource(slot));
+                dnd.addSource(new DragContainerSLotSource(slot));
                 dnd.addTarget(new DragTarget(slot));
             }
             slot.addListener(ItemTooltip.getInst());
@@ -128,7 +128,8 @@ public class UiContainer extends Table {
             update();
         }
 
-        public ItemContainer getContainer(){  return UiContainer.this.itCont; }
+        public ItemContainer getItemContainer(){  return UiContainer.this.itCont; }
+        public UiContainer getUiContainer(){ return UiContainer.this;}
 
         /** apelat cand se modifica continutul*/
         public void update() {
@@ -166,7 +167,7 @@ public class UiContainer extends Table {
 /* void setToSlots(Array<ContainerSlot> slots){
         clear();
         this.slots= new Array<ContainerSlot>(slots);
-        this.itCont= slots.get(0).getContainer();
+        this.itCont= slots.get(0).getItemContainer();
         int col=0;
         for (ContainerSlot slot: slots){
             if (col++>= cols) {row(); col=1;}

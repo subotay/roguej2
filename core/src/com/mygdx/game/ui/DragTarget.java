@@ -1,11 +1,12 @@
 package com.mygdx.game.ui;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 
 public class DragTarget extends DragAndDrop.Target{
-    UiContainer.ContainerSlot tinta;
+    Actor tinta;
 
-    public DragTarget(UiContainer.ContainerSlot actor) {
+    public DragTarget(Actor actor) {
         super(actor);
         tinta= actor;
     }
